@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import { Album } from '../albums/AlbumSection';
 import MoodsCard from './MoodsCard';
-import { CircularProgress, Grid, Stack } from '@mui/material';
+import { Box, CircularProgress, Grid, Stack } from '@mui/material';
 import MuiOutlineButton from 'components/UI/MuiOutlineButton';
 import AddIcon from '@mui/icons-material/Add';
 import DialogModal from 'components/UI/DialogModal';
@@ -144,9 +144,9 @@ const PodcastSection = () => {
 			)}
 
 			{loading ? (
-				<div style={{ height: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-					<CircularProgress size={100} />
-				</div>
+				<Box style={{ height: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+					<CircularProgress size={70} />
+				</Box>
 			) : (
 				<div className="container-fluid">
 					<div className="tab-content" id="myTabContent">

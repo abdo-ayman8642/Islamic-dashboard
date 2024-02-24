@@ -1,5 +1,5 @@
 'use client';
-import { CircularProgress, Grid, Stack } from '@mui/material';
+import { Box, CircularProgress, Grid, Stack } from '@mui/material';
 import AlbumCard from './AlbumCard';
 import { useCallback, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -231,9 +231,9 @@ const AlbumSection = () => {
 			)}
 
 			{loading ? (
-				<div style={{ height: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-					<CircularProgress size={100} />
-				</div>
+				<Box style={{ height: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+					<CircularProgress size={70} />
+				</Box>
 			) : (
 				<div className="container-fluid">
 					<div className="tab-content" id="myTabContent">

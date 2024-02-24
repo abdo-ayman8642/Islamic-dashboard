@@ -3,7 +3,7 @@ import CategoryCard from './CategoryCard';
 import { useCallback, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { addCategory, getCategories } from 'framework/categories';
-import { CircularProgress, Grid, Stack } from '@mui/material';
+import { Box, CircularProgress, Grid, Stack } from '@mui/material';
 import MuiOutlineButton from 'components/UI/MuiOutlineButton';
 //import SmallLoader from "@/components/shared/SmallLoader";
 import AddIcon from '@mui/icons-material/Add';
@@ -162,9 +162,9 @@ const CategorySection = () => {
 			)}
 
 			{loading ? (
-				<div style={{ height: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-					<CircularProgress size={100} />
-				</div>
+				<Box style={{ height: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+					<CircularProgress size={70} />
+				</Box>
 			) : (
 				<div className="container-fluid">
 					<div className="tab-content" id="myTabContent">
