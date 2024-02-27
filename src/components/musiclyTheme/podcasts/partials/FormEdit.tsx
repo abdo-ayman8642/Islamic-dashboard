@@ -42,7 +42,7 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, audio }) => {
 			titleAr: audio.title[1].value,
 			descriptionEn: audio.description[0].value,
 			descriptionAr: audio.description[1].value,
-			thumbnail: audio.thumbnail,
+
 			free: !!audio.isFree
 		}
 	});
@@ -103,15 +103,6 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, audio }) => {
 					</Grid>
 					<Grid item xs={12}>
 						<FormControlLabel control={<Checkbox {...register('free')} />} label="Is Free ?" />
-					</Grid>
-					<Grid item xs={12}>
-						<InputLabel htmlFor="thumbnail">Thumbnail</InputLabel>
-						<TextField type="file" id="thumbnail" fullWidth {...register('thumbnail')} />
-					</Grid>
-
-					<Grid item xs={12}>
-						<InputLabel htmlFor="audio">Audio</InputLabel>
-						<TextField type="file" id="audio" fullWidth {...register('audio')} />
 					</Grid>
 
 					<Grid item xs={12}>

@@ -27,7 +27,7 @@ axiosInstance.interceptors.response.use(
 		if (response.data.apiStatus) {
 			response.data = {
 				apiStatus: response.data.apiStatus,
-				data: JSON.parse(response.data.data)
+				data: response.data.data
 			};
 		}
 		return response;

@@ -1,17 +1,18 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { Album } from '../albums/AlbumSection';
 import MoodsCard from './MoodsCard';
-import { Box, CircularProgress, Grid, Stack } from '@mui/material';
+import { CircularProgress, Grid, Stack } from '@mui/material';
 import MuiOutlineButton from 'components/UI/MuiOutlineButton';
 import AddIcon from '@mui/icons-material/Add';
 import DialogModal from 'components/UI/DialogModal';
 import Form from './partials/Form';
-import { getPodcasts } from 'framework/podcast';
+import { addAudio, deleteAudio, editAudio, editImage, getPodcasts } from 'framework/podcast';
 import FormEdit from './partials/FormEdit';
 import FormDelete from './partials/FormDelete';
+import ThumbnailEdit from './partials/ThumbnailEdit';
 
 interface Information {
 	_id: string;
@@ -39,6 +40,43 @@ const PodcastSection = () => {
 	const [CurrAudio, setCurrAudio] = useState<Audio>({} as Audio);
 	const [openEditForm, setOpenEditForm] = useState<boolean>(false);
 	const [openDeleteForm, setOpenDeleteForm] = useState<boolean>(false);
+	const [openEditThumbnail, setOpenEditThumbnail] = useState<boolean>(false);
+
+	const mutationAddAudio = useMutation({
+		mutationFn: (createInput: FormData) => {
+			return addAudio(createInput);
+		},
+		onSuccess: () => {
+			fetchAudios();
+		}
+	});
+
+	const mutationEditAudio = useMutation({
+		mutationFn: (data: any) => {
+			return editAudio(data);
+		},
+		onSuccess: () => {
+			fetchAudios();
+		}
+	});
+
+	const mutationEditImage = useMutation({
+		mutationFn: (data: any) => {
+			return editImage(data);
+		},
+		onSuccess: () => {
+			fetchAudios();
+		}
+	});
+
+	const mutationDeleteAudio = useMutation({
+		mutationFn: (id: string) => {
+			return deleteAudio({ query: `/${id}` });
+		},
+		onSuccess: () => {
+			fetchAudios();
+		}
+	});
 
 	const fetchAudios = useCallback(async () => {
 		setLoading(true);
@@ -65,6 +103,119 @@ const PodcastSection = () => {
 		// eslint-disable-next-line
 	}, [searchTerm]);
 
+	const addAudioHandler = async (data: any) => {
+		const formData = new FormData();
+
+		console.log(data);
+
+		formData.append(
+			'data',
+			JSON.stringify({
+				title: [
+					{
+						lang: 'en',
+						value: data.titleEn
+					},
+					{
+						lang: 'ar',
+						value: data.titleAr
+					}
+				],
+				description: [
+					{
+						lang: 'en',
+						value: data.descriptionEn
+					},
+					{
+						lang: 'ar',
+						value: data.descriptionAr
+					}
+				],
+
+				slug: data.slug
+			})
+		);
+
+		data.thumbnail.length > 0 && formData.append('thumbnail', data.thumbnail[0]);
+		data.audio.length > 0 && formData.append('audio', data.audio[0]);
+		try {
+			const res = await mutationAddAudio.mutateAsync(formData);
+			if (res.Error) throw new Error(res.Message || 'Something went wrong');
+		} catch (error: any) {}
+	};
+
+	const deleteAudioHandler = async (id: string) => {
+		setOpenDeleteForm(false);
+		setLoading(true);
+		try {
+			const res = await mutationDeleteAudio.mutateAsync(id);
+			if (res.Error) throw new Error(res.Message || 'Something went wrong');
+			setLoading(false);
+		} catch (error: any) {
+			console.log(error);
+			setLoading(false);
+		}
+	};
+
+	const editAudioHandler = async (data: any) => {
+		setOpenEditForm(false);
+		setLoading(true);
+		try {
+			const res = await mutationEditAudio.mutateAsync({
+				id: CurrAudio._id,
+				title: [
+					{
+						lang: 'en',
+						value: data.titleEn
+					},
+					{
+						lang: 'ar',
+						value: data.titleAr
+					}
+				],
+				description: [
+					{
+						lang: 'en',
+						value: data.descriptionEn
+					},
+					{
+						lang: 'ar',
+						value: data.descriptionAr
+					}
+				],
+				isFree: data.free,
+				slug: data.slug
+			});
+			if (res.Error) throw new Error(res.Message || 'Something went wrong');
+			setLoading(false);
+		} catch (error: any) {
+			console.log(error);
+			setLoading(false);
+		}
+	};
+
+	const thumbnailCategoryHandler = async (data: any) => {
+		setOpenEditThumbnail(false);
+		setLoading(true);
+		const formData = new FormData();
+
+		formData.append('id', CurrAudio._id);
+
+		console.log(data?.thumbnail[0]);
+		if (data.thumbnail && data.thumbnail.length > 0) {
+			const file = data.thumbnail[0]; // Accessing the first (and only) file in the fileList
+			formData.append('thumbnail', file);
+		} else return;
+		try {
+			const res = await mutationEditImage.mutateAsync(formData);
+			setLoading(false);
+			if (res.Error) throw new Error(res.Message || 'Something went wrong');
+		} catch (error: any) {
+			console.log(error);
+			setLoading(false);
+		}
+	};
+
 	const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchTerm(e.target.value);
 	};
@@ -84,6 +235,14 @@ const PodcastSection = () => {
 		setOpenDeleteForm(true);
 	};
 
+	const handleOpenImage = (data: any) => {
+		setCurrAudio(data);
+		setOpenEditThumbnail(true);
+	};
+	const handleOnCloseEditImage = () => {
+		setCurrAudio({} as Audio);
+		setOpenEditThumbnail(false);
+	};
 	const handleCloseDeleteAlbum = () => {
 		setCurrAudio({} as Audio);
 		setOpenDeleteForm(false);
@@ -118,7 +277,7 @@ const PodcastSection = () => {
 			</Stack>
 			{openForm && (
 				<DialogModal
-					children={<Form onSubmitForm={onSubmit} />}
+					children={<Form onSubmitForm={addAudioHandler} />}
 					onClose={() => setOpenForm(false)}
 					open={openForm}
 					title="Add Audio"
@@ -127,7 +286,7 @@ const PodcastSection = () => {
 
 			{openDeleteForm && (
 				<DialogModal
-					children={<FormDelete onSubmitForm={onSubmit} id={CurrAudio._id} />}
+					children={<FormDelete onSubmitForm={deleteAudioHandler} id={CurrAudio._id} />}
 					onClose={handleCloseDeleteAlbum}
 					open={openDeleteForm}
 					title="Delete Audio"
@@ -136,17 +295,26 @@ const PodcastSection = () => {
 
 			{openEditForm && (
 				<DialogModal
-					children={<FormEdit audio={CurrAudio} onSubmitForm={onSubmit} />}
+					children={<FormEdit audio={CurrAudio} onSubmitForm={editAudioHandler} />}
 					onClose={handleOnCloseEdit}
 					open={openEditForm}
 					title="Edit Audio"
 				/>
 			)}
 
+			{openEditThumbnail && (
+				<DialogModal
+					children={<ThumbnailEdit onSubmitForm={thumbnailCategoryHandler} />}
+					onClose={handleOnCloseEditImage}
+					open={openEditThumbnail}
+					title="Change Image"
+				/>
+			)}
+
 			{loading ? (
-				<Box style={{ height: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-					<CircularProgress size={70} />
-				</Box>
+				<div style={{ height: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+					<CircularProgress size={40} />
+				</div>
 			) : (
 				<div className="container-fluid">
 					<div className="tab-content" id="myTabContent">
@@ -157,6 +325,7 @@ const PodcastSection = () => {
 										<MoodsCard
 											key={audio._id}
 											audio={audio}
+											onImage={handleOpenImage}
 											onClick={hanldeClickAudio}
 											onDelete={handleOpenDeleteAlbum}
 										/>
@@ -173,7 +342,7 @@ const PodcastSection = () => {
 								backgroundColor: '#a6a6a6',
 								borderRadius: '5px',
 								padding: '5px 10px',
-								fontSize: 'larger',
+								fontSize: 'smaller',
 								color: '#383838'
 							}}>
 							{'items'} {audios.length}

@@ -112,6 +112,7 @@ const Login: React.FC = () => {
 											fullWidth
 											helperText={formik.touched.email && formik.errors.email}
 											label="Email Address"
+											multiline
 											name="email"
 											onBlur={formik.handleBlur}
 											onChange={formik.handleChange}
@@ -124,6 +125,7 @@ const Login: React.FC = () => {
 											helperText={formik.touched.password && formik.errors.password}
 											label="Password"
 											name="password"
+											multiline
 											onBlur={formik.handleBlur}
 											onChange={formik.handleChange}
 											type="password"
@@ -172,14 +174,16 @@ const Login: React.FC = () => {
 								}}
 								variant="h2">
 								Welcome to{' '}
-								<Box component="a" sx={{ color: '#15B79E' }} target="_blank">
-									Emerging Systems
+								<Box component="a" sx={{ color: '#6366F1' }} target="_blank">
+									Rouh Al-Kalam
 								</Box>
 							</Typography>
 							<Typography align="center" sx={{ mb: 3 }} variant="subtitle1">
 								Use your credentials to access your account.
 							</Typography>
-							{/* <Box component={'img'} src={Image1} /> */}
+							<Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
+								<Box component={'img'} width={'200px'} src={'/img/logo/logo-cropped.png'} />
+							</Box>
 						</Box>
 					</Grid>
 				</Grid>

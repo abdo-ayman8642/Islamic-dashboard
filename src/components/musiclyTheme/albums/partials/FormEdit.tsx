@@ -10,8 +10,8 @@ const schema = yup.object().shape({
 	titleEn: yup.string().required('Title (English) is required'),
 	descriptionAr: yup.string().required('Description (Arabic) is required'),
 	descriptionEn: yup.string().required('Description (English) is required'),
-	category: yup.string().required('Category is required'),
-	thumbnail: yup.mixed()
+	slug: yup.string().required('Slug is required'),
+	category: yup.string().required('Category is required')
 });
 
 interface CategoriesProp {
@@ -25,7 +25,8 @@ type FormValues = {
 	descriptionAr: string;
 	descriptionEn: string;
 	category: string;
-	thumbnail?: string;
+
+	slug: string;
 };
 
 interface Props {
@@ -47,8 +48,9 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, album, categories }) => {
 			titleAr: album.title[1].value,
 			descriptionEn: album.description[0].value,
 			descriptionAr: album.description[1].value,
-			thumbnail: album.thumbnail,
-			category: album.category[0]
+
+			category: album.category[0],
+			slug: album.slug
 		}
 	});
 
@@ -61,6 +63,17 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, album, categories }) => {
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Grid container spacing={2}>
 					<Grid item xs={12} sx={{ mt: 2 }}>
+						<InputLabel htmlFor="titleEn">Title (English)</InputLabel>
+						<TextField
+							id="titleEn"
+							fullWidth
+							multiline
+							{...register('titleEn')}
+							error={!!errors.titleEn}
+							helperText={errors.titleEn?.message}
+						/>
+					</Grid>
+					<Grid item xs={12}>
 						<InputLabel htmlFor="titleAr">Title (Arabic)</InputLabel>
 						<TextField
 							id="titleAr"
@@ -71,15 +84,17 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, album, categories }) => {
 							helperText={errors.titleAr?.message}
 						/>
 					</Grid>
+
 					<Grid item xs={12}>
-						<InputLabel htmlFor="titleEn">Title (English)</InputLabel>
+						<InputLabel htmlFor="descriptionEn">Description (English)</InputLabel>
 						<TextField
-							id="titleEn"
+							id="descriptionEn"
 							fullWidth
 							multiline
-							{...register('titleEn')}
-							error={!!errors.titleEn}
-							helperText={errors.titleEn?.message}
+							rows={2}
+							{...register('descriptionEn')}
+							error={!!errors.descriptionEn}
+							helperText={errors.descriptionEn?.message}
 						/>
 					</Grid>
 					<Grid item xs={12}>
@@ -94,16 +109,16 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, album, categories }) => {
 							helperText={errors.descriptionAr?.message}
 						/>
 					</Grid>
+
 					<Grid item xs={12}>
-						<InputLabel htmlFor="descriptionEn">Description (English)</InputLabel>
+						<InputLabel htmlFor="slug">Slug</InputLabel>
 						<TextField
-							id="descriptionEn"
+							id="slug"
 							fullWidth
 							multiline
-							rows={2}
-							{...register('descriptionEn')}
-							error={!!errors.descriptionEn}
-							helperText={errors.descriptionEn?.message}
+							{...register('slug')}
+							error={!!errors.slug}
+							helperText={errors.slug?.message}
 						/>
 					</Grid>
 					<Grid item xs={12}>
@@ -121,10 +136,7 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, album, categories }) => {
 							))}
 						</Select>
 					</Grid>
-					<Grid item xs={12}>
-						<InputLabel htmlFor="thumbnail">Thumbnail</InputLabel>
-						<TextField type="file" id="thumbnail" fullWidth {...register('thumbnail')} />
-					</Grid>
+
 					<Grid item xs={12}>
 						<Button type="submit" variant="contained" color="primary" sx={{ width: '100%' }}>
 							Submit

@@ -9,6 +9,7 @@ const schema = yup.object().shape({
 	titleEn: yup.string().required('Title (English) is required'),
 	descriptionAr: yup.string().required('Description (Arabic) is required'),
 	descriptionEn: yup.string().required('Description (English) is required'),
+	slug: yup.string().required('Slug is required'),
 	thumbnail: yup.mixed()
 });
 
@@ -17,6 +18,7 @@ type FormValues = {
 	titleEn: string;
 	descriptionAr: string;
 	descriptionEn: string;
+	slug: string;
 	thumbnail?: FileList;
 };
 
@@ -85,6 +87,17 @@ const Form: React.FC<Props> = ({ onSubmitForm }) => {
 							{...register('descriptionEn')}
 							error={!!errors.descriptionEn}
 							helperText={errors.descriptionEn?.message}
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						<InputLabel htmlFor="slug">Slug</InputLabel>
+						<TextField
+							id="slug"
+							fullWidth
+							multiline
+							{...register('slug')}
+							error={!!errors.slug}
+							helperText={errors.slug?.message}
 						/>
 					</Grid>
 					<Grid item xs={12}>

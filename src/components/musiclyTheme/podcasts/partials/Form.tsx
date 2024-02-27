@@ -2,16 +2,16 @@ import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Button, TextField, InputLabel, Container, Grid, FormControlLabel, Checkbox } from '@mui/material';
+import { Button, TextField, InputLabel, Container, Grid } from '@mui/material';
 
 const schema = yup.object().shape({
 	titleAr: yup.string().required('Title (Arabic) is required'),
 	titleEn: yup.string().required('Title (English) is required'),
 	descriptionAr: yup.string().required('Description (Arabic) is required'),
 	descriptionEn: yup.string().required('Description (English) is required'),
+	slug: yup.string().required('Slug is required'),
 	thumbnail: yup.mixed(),
-	audio: yup.mixed(),
-	free: yup.boolean().default(false)
+	audio: yup.mixed()
 });
 
 type FormValues = {
@@ -21,7 +21,7 @@ type FormValues = {
 	descriptionEn: string;
 	thumbnail?: FileList;
 	audio?: FileList;
-	free: boolean;
+	slug: string;
 };
 
 interface Props {
@@ -46,6 +46,17 @@ const Form: React.FC<Props> = ({ onSubmitForm }) => {
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Grid container spacing={2}>
 					<Grid item xs={12} sx={{ mt: 2 }}>
+						<InputLabel htmlFor="titleEn">Title (English)</InputLabel>
+						<TextField
+							id="titleEn"
+							fullWidth
+							multiline
+							{...register('titleEn')}
+							error={!!errors.titleEn}
+							helperText={errors.titleEn?.message}
+						/>
+					</Grid>
+					<Grid item xs={12}>
 						<InputLabel htmlFor="titleAr">Title (Arabic)</InputLabel>
 						<TextField
 							id="titleAr"
@@ -56,15 +67,17 @@ const Form: React.FC<Props> = ({ onSubmitForm }) => {
 							helperText={errors.titleAr?.message}
 						/>
 					</Grid>
+
 					<Grid item xs={12}>
-						<InputLabel htmlFor="titleEn">Title (English)</InputLabel>
+						<InputLabel htmlFor="descriptionEn">Description (English)</InputLabel>
 						<TextField
-							id="titleEn"
+							id="descriptionEn"
 							fullWidth
 							multiline
-							{...register('titleEn')}
-							error={!!errors.titleEn}
-							helperText={errors.titleEn?.message}
+							rows={2}
+							{...register('descriptionEn')}
+							error={!!errors.descriptionEn}
+							helperText={errors.descriptionEn?.message}
 						/>
 					</Grid>
 					<Grid item xs={12}>
@@ -80,20 +93,17 @@ const Form: React.FC<Props> = ({ onSubmitForm }) => {
 						/>
 					</Grid>
 					<Grid item xs={12}>
-						<InputLabel htmlFor="descriptionEn">Description (English)</InputLabel>
+						<InputLabel htmlFor="slug">Slug</InputLabel>
 						<TextField
-							id="descriptionEn"
+							id="slug"
 							fullWidth
 							multiline
-							rows={2}
-							{...register('descriptionEn')}
-							error={!!errors.descriptionEn}
-							helperText={errors.descriptionEn?.message}
+							{...register('slug')}
+							error={!!errors.slug}
+							helperText={errors.slug?.message}
 						/>
 					</Grid>
-					<Grid item xs={12}>
-						<FormControlLabel control={<Checkbox {...register('free')} />} label="Is Free ?" />
-					</Grid>
+
 					<Grid item xs={12}>
 						<InputLabel htmlFor="thumbnail">Thumbnail</InputLabel>
 						<TextField type="file" id="thumbnail" fullWidth {...register('thumbnail')} />

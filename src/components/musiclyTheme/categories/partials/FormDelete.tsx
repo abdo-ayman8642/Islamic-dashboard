@@ -8,6 +8,7 @@ interface Props {
 
 const FormDelete: React.FC<Props> = ({ onSubmitForm, id }) => {
 	const onSubmit = (data: string) => {
+		console.log(data);
 		onSubmitForm(data);
 	};
 

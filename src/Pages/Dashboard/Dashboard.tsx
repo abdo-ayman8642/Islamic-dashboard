@@ -1,4 +1,4 @@
-import { memo, Suspense, useCallback } from 'react';
+import { memo, Suspense, useCallback, useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useAlert } from '../../contexts/alertContext';
 
@@ -44,13 +44,13 @@ const Dashboard: React.FC = () => {
 		// eslint-disable-next-line
 	}, []);
 
-	// useEffect(() => {
-	// 	const accessToken: string | null = localStorage.getItem(LocalStorage.ACCESS_TOKEN);
-	// 	if (accessToken) initApp();
-	// 	else redirectToLogin();
+	useEffect(() => {
+		const accessToken: string | null = localStorage.getItem(LocalStorage.ACCESS_TOKEN);
+		if (accessToken) initApp();
+		else redirectToLogin();
 
-	// 	// eslint-disable-next-line
-	// }, []);
+		// eslint-disable-next-line
+	}, []);
 
 	// if (loading) return <ActionLoader position="fixed" />;
 	return (

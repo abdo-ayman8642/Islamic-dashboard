@@ -2,6 +2,7 @@
 import { Album } from '../albums/AlbumSection';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ImageIcon from '@mui/icons-material/Image';
 
 interface Information {
 	_id: string;
@@ -24,8 +25,9 @@ interface AudioCard {
 	audio: Audio;
 	onClick: (data: Audio) => void;
 	onDelete: (data: Audio) => void;
+	onImage: (data: Audio) => void;
 }
-const MoodsCard = ({ audio, onClick, onDelete }: AudioCard) => {
+const MoodsCard = ({ audio, onClick, onDelete, onImage }: AudioCard) => {
 	return (
 		<div className="trending__item text-center round16 play-button-container">
 			<div className="thumb ralt overhid transition">
@@ -47,6 +49,12 @@ const MoodsCard = ({ audio, onClick, onDelete }: AudioCard) => {
 					</div>
 					<div
 						className="d-flex fs-16 fw-500 white align-items-center gap-3"
+						onClick={() => onImage(audio)}
+						style={{ cursor: 'pointer' }}>
+						<ImageIcon />
+					</div>
+					<div
+						className="d-flex fs-16 fw-500 white align-items-center gap-3"
 						onClick={() => onDelete(audio)}
 						style={{ cursor: 'pointer' }}>
 						<DeleteIcon />
@@ -55,7 +63,7 @@ const MoodsCard = ({ audio, onClick, onDelete }: AudioCard) => {
 			</div>
 			<div className="content mt-16">
 				<h5>
-					<div className=" d-block mb-1" style={{ fontSize: '25px', color: 'black' }}>
+					<div className=" d-block mb-1" style={{ fontSize: '18px', color: 'black' }}>
 						{audio.title![0].value}
 					</div>
 				</h5>
