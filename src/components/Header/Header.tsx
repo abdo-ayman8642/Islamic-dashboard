@@ -1,11 +1,10 @@
 import { Menu } from '@mui/icons-material';
-import { Avatar, Grid, IconButton, Stack } from '@mui/material';
+import { Grid, IconButton, Stack } from '@mui/material';
 import { useState } from 'react';
 import HeaderDrawer from './partials/Drawer';
 import MuiOutlineButton from 'components/UI/MuiOutlineButton';
 import useApp from 'hooks/useApp';
 import LogoutIcon from '@mui/icons-material/Logout';
-import SearchField from './partials/SearchField';
 
 const Header: React.FC = () => {
 	const [openDrawer, setOpenDrawer] = useState<boolean>(false);
@@ -25,30 +24,6 @@ const Header: React.FC = () => {
 			</IconButton>
 			<HeaderDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} />
 
-			<Stack
-				direction={'row'}
-				alignItems={'center'}
-				borderRadius={20}
-				bgcolor="background.paper"
-				p={1}
-				spacing={1}
-				sx={{ display: { xs: 'none', lg: 'flex' } }}>
-				<SearchField />
-				<IconButton>
-					{/* <Badge badgeContent={2} color="error">
-            <Notification color="inherit" />
-          </Badge> */}
-				</IconButton>
-				<IconButton>
-					<Avatar
-						alt="User Image"
-						src={
-							'https://images.unsplash.com/photo-1576558656222-ba66febe3dec?ilgib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80'
-						}
-						sx={{ width: 24, height: 24 }}
-					/>
-				</IconButton>
-			</Stack>
 			<Grid container justifyContent={'flex-end'} sx={{ display: { xs: 'none', lg: 'flex' } }}>
 				<MuiOutlineButton
 					variant="outlined"

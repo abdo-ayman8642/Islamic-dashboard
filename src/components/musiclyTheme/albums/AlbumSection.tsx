@@ -13,6 +13,7 @@ import { getCategories } from 'framework/categories';
 import FormDelete from './partials/FormDelete';
 import { Category } from '../categories/CategorySection';
 import ThumbnailEdit from './partials/ThumbnailEdit';
+import SearchField from 'components/Header/partials/SearchField';
 
 interface Information {
 	_id: string;
@@ -314,7 +315,17 @@ const AlbumSection = () => {
 				alignItems={'center'}
 				useFlexGap
 				sx={{ m: '20px' }}>
-				Albums
+				<Stack
+					direction={'row'}
+					alignItems={'center'}
+					borderRadius={20}
+					bgcolor="background.paper"
+					p={1}
+					spacing={1}
+					sx={{ display: { xs: 'none', lg: 'flex' } }}>
+					<div style={{ padding: '0 20px' }}>Albums </div>
+					<SearchField />
+				</Stack>
 				<Grid container justifyContent={'flex-end'} sx={{ display: { xs: 'none', lg: 'flex' } }}>
 					<MuiOutlineButton
 						variant="outlined"

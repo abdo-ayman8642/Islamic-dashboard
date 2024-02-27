@@ -31,6 +31,7 @@ interface Props {
 }
 
 const FormEdit: React.FC<Props> = ({ onSubmitForm, audio }) => {
+	console.log('audio', audio);
 	const {
 		register,
 		handleSubmit,
@@ -50,7 +51,7 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, audio }) => {
 	const onSubmit: SubmitHandler<FormValues> = (data) => {
 		onSubmitForm(data);
 	};
-
+	console.log(register('free'));
 	return (
 		<Container maxWidth="sm">
 			<form onSubmit={handleSubmit(onSubmit)}>
@@ -102,7 +103,10 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, audio }) => {
 						/>
 					</Grid>
 					<Grid item xs={12}>
-						<FormControlLabel control={<Checkbox {...register('free')} />} label="Is Free ?" />
+						<FormControlLabel
+							control={<Checkbox defaultChecked={!!audio?.isFree} {...register('free')} />}
+							label="Is Free ?"
+						/>
 					</Grid>
 
 					<Grid item xs={12}>
