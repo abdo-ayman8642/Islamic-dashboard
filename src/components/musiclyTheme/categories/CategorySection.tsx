@@ -271,11 +271,11 @@ const CategorySection = () => {
 					bgcolor="background.paper"
 					p={1}
 					spacing={1}
-					sx={{ display: { xs: 'none', lg: 'flex' } }}>
+					sx={{ display: { lg: 'flex' } }}>
 					<div style={{ padding: '0 20px' }}>Categories </div>
 					<SearchField />
 				</Stack>
-				<Grid container justifyContent={'flex-end'} sx={{ display: { xs: 'none', lg: 'flex' } }}>
+				<Grid container justifyContent={'flex-end'} sx={{ display: { lg: 'flex' } }}>
 					<MuiOutlineButton
 						variant="outlined"
 						color="inherit"
