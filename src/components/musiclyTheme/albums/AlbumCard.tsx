@@ -1,9 +1,8 @@
 'use client';
-
-import { Album } from './AlbumSection';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ImageIcon from '@mui/icons-material/Image';
+import { Album } from 'models/api';
 
 interface AlbumCard {
 	album: Album;

@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Button, TextField, InputLabel, Container, Grid, Select, MenuItem } from '@mui/material';
-import { Album } from '../AlbumSection';
+import { Album } from 'models/api';
 
 const schema = yup.object().shape({
 	titleAr: yup.string().required('Title (Arabic) is required'),

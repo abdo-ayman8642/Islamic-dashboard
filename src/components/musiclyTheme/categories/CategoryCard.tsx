@@ -3,7 +3,7 @@
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ImageIcon from '@mui/icons-material/Image';
-import { Category } from './CategorySection';
+import { Category } from 'models/api';
 
 interface CategoryCardProp {
 	category: Category;

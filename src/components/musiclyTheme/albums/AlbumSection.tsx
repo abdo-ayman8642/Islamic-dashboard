@@ -11,44 +11,10 @@ import { addAlbum, deleteAlbum, editAlbum, editImage, getAlbums } from 'framewor
 import FormEdit from './partials/FormEdit';
 import { getCategories } from 'framework/categories';
 import FormDelete from './partials/FormDelete';
-import { Category } from '../categories/CategorySection';
+
 import ThumbnailEdit from './partials/ThumbnailEdit';
 import SearchField from 'components/Header/partials/SearchField';
-
-interface Information {
-	_id: string;
-	lang: string;
-	value: string;
-}
-
-interface Audio {
-	_id: string;
-	title: Information[];
-	description: Information[];
-	isFree: boolean;
-	albums: Album[];
-	rating: number;
-	createdAt: string;
-	thumbnail: string;
-}
-export interface Album {
-	_id: string;
-	audios: Audio[];
-	description: Information[];
-	title: Information[];
-	category: string[];
-	thumbnail: string;
-	rating: number;
-	slug: string;
-	userRates?: [
-		{
-			userId: string;
-			rate: number;
-			_id: string;
-		}
-	];
-	isFavorite: boolean;
-}
+import { Album, Category } from 'models/api';
 
 const AlbumSection = () => {
 	const queryClient = useQueryClient();

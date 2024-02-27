@@ -37,3 +37,51 @@ export interface DateRangeProps {
 	endDate: Date;
 	key?: string;
 }
+
+interface Information {
+	_id: string;
+	lang: string;
+	value: string;
+}
+
+export interface Category {
+	_id: string;
+	albums: string[];
+	description: Information[];
+	title: Information[];
+	thumbnail: string;
+	createdAt: string;
+	updatedAt: string;
+	slug: string;
+}
+
+export interface Album {
+	_id: string;
+	audios: Audio[];
+	description: Information[];
+	title: Information[];
+	category: string[];
+	thumbnail: string;
+	rating: number;
+	slug: string;
+	userRates?: [
+		{
+			userId: string;
+			rate: number;
+			_id: string;
+		}
+	];
+	isFavorite: boolean;
+}
+
+export interface Audio {
+	_id: string;
+	title: Information[];
+	description: Information[];
+	isFree: boolean;
+	albums: Album[];
+	rating: number;
+	createdAt: string;
+	slug: string;
+	thumbnail: string;
+}

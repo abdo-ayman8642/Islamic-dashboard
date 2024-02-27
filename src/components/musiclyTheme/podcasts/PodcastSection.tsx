@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { Album } from '../albums/AlbumSection';
 import MoodsCard from './MoodsCard';
 import { CircularProgress, Grid, Stack } from '@mui/material';
 import MuiOutlineButton from 'components/UI/MuiOutlineButton';
@@ -14,23 +13,7 @@ import FormEdit from './partials/FormEdit';
 import FormDelete from './partials/FormDelete';
 import ThumbnailEdit from './partials/ThumbnailEdit';
 import SearchField from 'components/Header/partials/SearchField';
-
-interface Information {
-	_id: string;
-	lang: string;
-	value: string;
-}
-
-export interface Audio {
-	_id: string;
-	title: Information[];
-	description: Information[];
-	isFree: boolean;
-	albums: Album[];
-	rating: number;
-	createdAt: string;
-	thumbnail: string;
-}
+import { Audio } from 'models/api';
 
 const PodcastSection = () => {
 	const queryClient = useQueryClient();

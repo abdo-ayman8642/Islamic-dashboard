@@ -1,25 +1,8 @@
 'use client';
-import { Album } from '../albums/AlbumSection';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ImageIcon from '@mui/icons-material/Image';
-
-interface Information {
-	_id: string;
-	lang: string;
-	value: string;
-}
-
-export interface Audio {
-	_id: string;
-	title: Information[];
-	description: Information[];
-	isFree: boolean;
-	albums: Album[];
-	rating: number;
-	createdAt: string;
-	thumbnail: string;
-}
+import { Audio } from 'models/api';
 
 interface AudioCard {
 	audio: Audio;

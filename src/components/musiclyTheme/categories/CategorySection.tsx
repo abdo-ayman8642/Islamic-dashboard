@@ -13,23 +13,7 @@ import FormEdit from './partials/FormEdit';
 import FormDelete from './partials/FormDelete';
 import ThumbnailEdit from './partials/ThumbnailEdit';
 import SearchField from 'components/Header/partials/SearchField';
-
-interface Information {
-	_id: string;
-	lang: string;
-	value: string;
-}
-
-export interface Category {
-	_id: string;
-	albums: string[];
-	description: Information[];
-	title: Information[];
-	thumbnail: string;
-	createdAt: string;
-	updatedAt: string;
-	slug: string;
-}
+import { Category } from 'models/api';
 
 const CategorySection = () => {
 	const queryClient = useQueryClient();

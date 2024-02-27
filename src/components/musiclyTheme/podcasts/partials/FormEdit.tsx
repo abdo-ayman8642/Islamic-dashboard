@@ -3,13 +3,14 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Button, TextField, InputLabel, Container, Grid, FormControlLabel, Checkbox } from '@mui/material';
-import { Audio } from '../MoodsCard';
+import { Audio } from 'models/api';
 
 const schema = yup.object().shape({
 	titleAr: yup.string().required('Title (Arabic) is required'),
 	titleEn: yup.string().required('Title (English) is required'),
 	descriptionAr: yup.string().required('Description (Arabic) is required'),
 	descriptionEn: yup.string().required('Description (English) is required'),
+	slug: yup.string().required('Slug is required'),
 	thumbnail: yup.mixed(),
 	audio: yup.mixed(),
 	free: yup.boolean().default(false)
@@ -21,6 +22,7 @@ type FormValues = {
 	descriptionAr: string;
 	descriptionEn: string;
 	thumbnail?: string;
+	slug: string;
 	audio?: FileList;
 	free: boolean;
 };
@@ -43,7 +45,7 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, audio }) => {
 			titleAr: audio.title[1].value,
 			descriptionEn: audio.description[0].value,
 			descriptionAr: audio.description[1].value,
-
+			slug: audio.slug,
 			free: !!audio.isFree
 		}
 	});
@@ -100,6 +102,18 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, audio }) => {
 							{...register('descriptionAr')}
 							error={!!errors.descriptionAr}
 							helperText={errors.descriptionAr?.message}
+						/>
+					</Grid>
+
+					<Grid item xs={12}>
+						<InputLabel htmlFor="slug">Slug</InputLabel>
+						<TextField
+							id="slug"
+							fullWidth
+							multiline
+							{...register('slug')}
+							error={!!errors.slug}
+							helperText={errors.slug?.message}
 						/>
 					</Grid>
 
