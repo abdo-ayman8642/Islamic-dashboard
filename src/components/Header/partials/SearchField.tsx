@@ -19,6 +19,7 @@ function SearchField() {
 			color="primary"
 			type="text"
 			value={data.search}
+			multiline
 			onChange={(e) => setData({ ...data, search: e.target.value })}
 			onKeyDown={(e: any) => e.key === 'Enter' && handleSubmit(e)}
 			sx={{ display: 'flex', width: 250, p: 1, bgcolor: 'background.default', borderRadius: 48 }}

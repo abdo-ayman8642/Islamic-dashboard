@@ -106,6 +106,8 @@ const PodcastSection = () => {
 
 	const addAudioHandler = async (data: any) => {
 		const formData = new FormData();
+		setOpenForm(false);
+		setLoading(true);
 
 		console.log(data);
 
@@ -141,8 +143,11 @@ const PodcastSection = () => {
 		data.audio.length > 0 && formData.append('audio', data.audio[0]);
 		try {
 			const res = await mutationAddAudio.mutateAsync(formData);
+			setLoading(false);
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
-		} catch (error: any) {}
+		} catch (error: any) {
+			setLoading(false);
+		}
 	};
 
 	const deleteAudioHandler = async (id: string) => {
