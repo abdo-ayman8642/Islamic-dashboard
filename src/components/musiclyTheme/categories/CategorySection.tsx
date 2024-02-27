@@ -263,7 +263,7 @@ const CategorySection = () => {
 				justifyContent={'center'}
 				alignItems={'center'}
 				useFlexGap
-				sx={{ m: '20px' }}>
+				sx={{ m: '20px', flexDirection: { xs: 'column', lg: 'row' } }}>
 				<Stack
 					direction={'row'}
 					alignItems={'center'}
