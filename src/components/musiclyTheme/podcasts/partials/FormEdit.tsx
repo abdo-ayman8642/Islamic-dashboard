@@ -57,17 +57,6 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, audio }) => {
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Grid container spacing={2}>
 					<Grid item xs={12} sx={{ mt: 2 }}>
-						<InputLabel htmlFor="titleAr">Title (Arabic)</InputLabel>
-						<TextField
-							id="titleAr"
-							fullWidth
-							multiline
-							{...register('titleAr')}
-							error={!!errors.titleAr}
-							helperText={errors.titleAr?.message}
-						/>
-					</Grid>
-					<Grid item xs={12}>
 						<InputLabel htmlFor="titleEn">Title (English)</InputLabel>
 						<TextField
 							id="titleEn"
@@ -79,15 +68,14 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, audio }) => {
 						/>
 					</Grid>
 					<Grid item xs={12}>
-						<InputLabel htmlFor="descriptionAr">Description (Arabic)</InputLabel>
+						<InputLabel htmlFor="titleAr">Title (Arabic)</InputLabel>
 						<TextField
-							id="descriptionAr"
+							id="titleAr"
 							fullWidth
 							multiline
-							rows={2}
-							{...register('descriptionAr')}
-							error={!!errors.descriptionAr}
-							helperText={errors.descriptionAr?.message}
+							{...register('titleAr')}
+							error={!!errors.titleAr}
+							helperText={errors.titleAr?.message}
 						/>
 					</Grid>
 					<Grid item xs={12}>
@@ -102,6 +90,19 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, audio }) => {
 							helperText={errors.descriptionEn?.message}
 						/>
 					</Grid>
+					<Grid item xs={12}>
+						<InputLabel htmlFor="descriptionAr">Description (Arabic)</InputLabel>
+						<TextField
+							id="descriptionAr"
+							fullWidth
+							multiline
+							rows={2}
+							{...register('descriptionAr')}
+							error={!!errors.descriptionAr}
+							helperText={errors.descriptionAr?.message}
+						/>
+					</Grid>
+
 					<Grid item xs={12}>
 						<FormControlLabel
 							control={<Checkbox defaultChecked={!!audio?.isFree} {...register('free')} />}
