@@ -310,11 +310,10 @@ const AlbumSection = () => {
 		<section className="trending__section pr-24 pl-24 pb-100">
 			<Stack
 				component="main"
-				direction={'row'}
 				justifyContent={'center'}
 				alignItems={'center'}
 				useFlexGap
-				sx={{ m: '20px' }}>
+				sx={{ m: '20px', flexDirection: { xs: 'column', lg: 'row' } }}>
 				<Stack
 					direction={'row'}
 					alignItems={'center'}
