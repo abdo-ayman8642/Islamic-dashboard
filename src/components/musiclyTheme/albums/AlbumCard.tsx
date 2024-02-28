@@ -17,10 +17,10 @@ const AlbumCard = ({ album, onClick, onDelete, onImage }: AlbumCard) => {
 			<div className="thumb ralt overhid transition">
 				<img
 					src={album.thumbnail || '/img/pocast/q.png'}
-					width={200}
-					height={200}
-					className="w-100  transition overhid  h-100 transition"
-					style={{ width: '200px', aspectRatio: '1/1' }}
+					width={150}
+					height={150}
+					className="w-80  transition overhid  h-80 transition"
+					style={{ width: '150px', aspectRatio: '1/1' }}
 					alt="img"
 				/>
 

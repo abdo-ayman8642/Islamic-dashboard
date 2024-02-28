@@ -4,6 +4,7 @@ import Analytics from 'Pages/Analytics/Analytics';
 import Categories from 'Pages/Categories/Categories';
 import Podcasts from 'Pages/Podcasts/Podcasts';
 import ActionLoader from 'components/UI/ActionLoader';
+import CategoryDetails from 'components/musiclyTheme/categories/partials/CategoryDetails';
 import { Resources } from 'enums/rosources';
 import { fetchServices } from 'framework/services';
 import { Feature } from 'models/api';
@@ -33,7 +34,7 @@ const Listing: React.FC<Props> = () => {
 
 	const renderEditForm = () => {
 		if (!feature) return null;
-		return <div>ok</div>;
+		if (feature.name === Resources.CATEGORIES) return <CategoryDetails />;
 	};
 
 	const renderList = () => {
@@ -49,7 +50,7 @@ const Listing: React.FC<Props> = () => {
 			<Routes>
 				<Route path="/*" element={renderList()} />
 				{/* <Route path="new" element={renderCreateForm()} /> */}
-				<Route path={`:${feature.singleName}Id/*`} element={renderEditForm()} />
+				<Route path={`:${feature.singleName}slug/*`} element={renderEditForm()} />
 			</Routes>
 		</>
 	);

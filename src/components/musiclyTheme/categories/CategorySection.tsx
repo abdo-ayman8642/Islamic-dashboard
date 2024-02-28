@@ -256,15 +256,15 @@ const CategorySection = () => {
 					p={1}
 					spacing={1}
 					sx={{ display: { lg: 'flex' } }}>
-					<div style={{ padding: '0 20px' }}>Categories </div>
-					<SearchField />
+					<div style={{ padding: '0 20px', fontSize: '15px' }}>Categories </div>
+					<SearchField onChange={handleSearch} value={searchTerm} />
 				</Stack>
 				<Grid container justifyContent={'flex-end'} sx={{ display: { lg: 'flex' } }}>
 					<MuiOutlineButton
 						variant="outlined"
 						color="inherit"
 						size="small"
-						sx={{ px: 4, py: 2 }}
+						sx={{ px: 3, py: 1, fontSize: '15px' }}
 						startIcon={<AddIcon sx={{ fill: '#232323' }} />}
 						onClick={() => setOpenForm(true)}>
 						Add New
