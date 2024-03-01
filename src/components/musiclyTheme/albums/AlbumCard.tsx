@@ -3,6 +3,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ImageIcon from '@mui/icons-material/Image';
 import { Album } from 'models/api';
+import { Link } from 'react-router-dom';
+import { MoreVert } from '@mui/icons-material';
 
 interface AlbumCard {
 	album: Album;
@@ -43,6 +45,12 @@ const AlbumCard = ({ album, onClick, onDelete, onImage }: AlbumCard) => {
 						style={{ cursor: 'pointer' }}>
 						<DeleteIcon />
 					</div>
+					<Link
+						to={`/albums/${album.slug}`}
+						className="d-flex fs-16 fw-500 white align-items-center gap-3"
+						style={{ cursor: 'pointer' }}>
+						<MoreVert />
+					</Link>
 				</div>
 			</div>
 			<div className="content mt-16">

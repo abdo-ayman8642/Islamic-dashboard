@@ -28,6 +28,11 @@ export async function deleteAlbum({ query }: any) {
 	return response.data;
 }
 
+export async function removeAudioFromAlbum({ query }: any) {
+	const response = await axiosInstance.delete(DELETE_ALBUM + query);
+	return response.data;
+}
+
 export async function editImage(data: FormData) {
 	const response = await axiosInstance.post(UPDATE_IMAGE, data, {
 		headers: {

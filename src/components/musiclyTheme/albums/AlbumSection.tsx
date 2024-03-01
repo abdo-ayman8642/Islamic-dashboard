@@ -11,10 +11,11 @@ import { addAlbum, deleteAlbum, editAlbum, editImage, getAlbums } from 'framewor
 import FormEdit from './partials/FormEdit';
 import { getCategories } from 'framework/categories';
 import FormDelete from './partials/FormDelete';
-
+import { getErrorTranslation } from 'helpers/utils';
 import ThumbnailEdit from './partials/ThumbnailEdit';
 import SearchField from 'components/Header/partials/SearchField';
 import { Album, Category } from 'models/api';
+import toast from 'react-hot-toast';
 
 const AlbumSection = () => {
 	const queryClient = useQueryClient();
@@ -114,7 +115,7 @@ const AlbumSection = () => {
 	const addAlbumHandler = async (data: any) => {
 		const formData = new FormData();
 
-		console.log(data);
+		setLoading(true);
 
 		formData.append(
 			'data',
@@ -148,8 +149,12 @@ const AlbumSection = () => {
 		try {
 			const res = await mutationAddAlbum.mutateAsync(formData);
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
+			setLoading(false);
+			toast.success('Successfully Added Album');
 		} catch (error: any) {
-		} finally {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
 		}
 	};
 
@@ -168,9 +173,11 @@ const AlbumSection = () => {
 			const res = await mutationDeleteAlbum.mutateAsync(id);
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
 			setLoading(false);
+			toast.success('Successfully Deleted Album');
 		} catch (error: any) {
-			console.log(error);
 			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
 		}
 	};
 
@@ -181,18 +188,19 @@ const AlbumSection = () => {
 
 		formData.append('id', CurrAlbum._id);
 
-		console.log(data?.thumbnail[0]);
 		if (data.thumbnail && data.thumbnail.length > 0) {
 			const file = data.thumbnail[0]; // Accessing the first (and only) file in the fileList
 			formData.append('thumbnail', file);
 		} else return;
 		try {
 			const res = await mutationEditImage.mutateAsync(formData);
-			setLoading(false);
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
-		} catch (error: any) {
-			console.log(error);
 			setLoading(false);
+			toast.success('Successfully changed Album Image');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
 		}
 	};
 
@@ -227,9 +235,11 @@ const AlbumSection = () => {
 			});
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
 			setLoading(false);
+			toast.success('Successfully Edited Album');
 		} catch (error: any) {
-			console.log(error);
 			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
 		}
 	};
 
@@ -238,7 +248,6 @@ const AlbumSection = () => {
 	};
 
 	const onSubmit = (data: any) => {
-		console.log(data);
 		addAlbumHandler(data);
 		setOpenForm(false);
 	};
@@ -309,6 +318,7 @@ const AlbumSection = () => {
 			</Stack>
 			{openForm && (
 				<DialogModal
+					fullScreen
 					children={
 						<Form
 							onSubmitForm={onSubmit}
@@ -334,6 +344,7 @@ const AlbumSection = () => {
 
 			{openEditForm && (
 				<DialogModal
+					fullScreen
 					children={
 						<FormEdit
 							album={CurrAlbum}
@@ -351,6 +362,7 @@ const AlbumSection = () => {
 
 			{openEditThumbnail && (
 				<DialogModal
+					fullScreen
 					children={<ThumbnailEdit onSubmitForm={thumbnailCategoryHandler} />}
 					onClose={handleOnImageEdit}
 					open={openEditThumbnail}

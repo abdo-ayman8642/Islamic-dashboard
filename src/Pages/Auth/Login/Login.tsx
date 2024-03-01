@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import * as Yup from 'yup';
 import useApp from 'hooks/useApp';
 
-import { Box, Button, Grid, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Grid, Stack, TextField, Typography } from '@mui/material';
 
 import { useMutation } from 'react-query';
 import { signIn } from 'framework/auth';
@@ -14,11 +14,13 @@ import useAuthStore from 'store/auth';
 import MuiSnackbar from 'components/UI/MuiSnackbar';
 import { useAlert } from 'contexts/alertContext';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const Login: React.FC = () => {
 	const { push } = useApp();
 	const setSession = useAuthStore((state) => state.setSession);
 	const { alert } = useAlert();
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const mutationLogin = useMutation({
 		mutationFn: (createInput: any) => {
@@ -42,6 +44,7 @@ const Login: React.FC = () => {
 			// .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}$/, "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character")
 		}),
 		onSubmit: async (values, helpers) => {
+			setLoading(true);
 			try {
 				const response: ILoginResponse = await mutationLogin.mutateAsync(values);
 				// setAlert({ open: true, message: `Welcome ${res.user.name}`, type: "success" });
@@ -60,10 +63,13 @@ const Login: React.FC = () => {
 					setSession(response.data.user);
 					push('/analytics');
 				}
+				toast.success('Successfully Logged In');
+				setLoading(false);
 			} catch (err: any) {
 				helpers.setStatus({ success: false });
 				helpers.setErrors({ submit: err.message });
 				helpers.setSubmitting(false);
+				setLoading(false);
 			}
 		}
 	});
@@ -137,9 +143,10 @@ const Login: React.FC = () => {
 											{formik.errors.submit}
 										</Typography>
 									)}
-									<Button fullWidth size="large" sx={{ mt: 3 }} type="submit" variant="contained">
-										Continue
+									<Button fullWidth size="large" sx={{ mt: 3, py: 1 }} type="submit" variant="contained">
+										{loading ? <CircularProgress size={20} sx={{ color: 'white' }} /> : 'Continue'}
 									</Button>
+
 									<Grid container justifyContent="space-between" sx={{ mt: 1 }}>
 										<Grid item>
 											<Link to="/forgot-password">Forgot password?</Link>

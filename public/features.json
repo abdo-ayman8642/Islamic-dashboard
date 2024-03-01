@@ -38,5 +38,15 @@
 		"precedence": "4",
 		"parentID": "-1",
 		"children": []
+	},
+	{
+		"id": 5,
+		"name": "Profile",
+		"icon": "ProfileIcon",
+		"slug": "profile",
+		"singleName": "Profile",
+		"precedence": "5",
+		"parentID": "-1",
+		"children": []
 	}
 ]

@@ -36,7 +36,6 @@ interface Props {
 }
 
 const FormEdit: React.FC<Props> = ({ onSubmitForm, album, categories }) => {
-	console.log(album.category[0] === categories[0].value);
 	const {
 		register,
 		handleSubmit,
@@ -59,7 +58,7 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, album, categories }) => {
 	};
 
 	return (
-		<Container maxWidth="sm">
+		<Container maxWidth="md" sx={{ m: 0 }}>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Grid container spacing={2}>
 					<Grid item xs={12} sx={{ mt: 2 }}>

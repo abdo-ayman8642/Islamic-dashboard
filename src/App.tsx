@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import Dashboard from './Pages/Dashboard';
 import { AlertProvider } from './contexts/alertContext';
 import Login from 'Pages/Auth/Login';
+import { Toaster } from 'react-hot-toast';
 
 const App: React.FC = () => {
 	const queryClient = new QueryClient();
@@ -10,6 +11,7 @@ const App: React.FC = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<AlertProvider>
+				<Toaster position="bottom-right" />
 				<Routes>
 					<Route path="/login" element={<Login />} />
 					{/* <Route path="/forgot-password" element={<ForgetPassword />} />

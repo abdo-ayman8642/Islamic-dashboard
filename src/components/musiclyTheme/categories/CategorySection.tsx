@@ -14,6 +14,8 @@ import FormDelete from './partials/FormDelete';
 import ThumbnailEdit from './partials/ThumbnailEdit';
 import SearchField from 'components/Header/partials/SearchField';
 import { Category } from 'models/api';
+import toast from 'react-hot-toast';
+import { getErrorTranslation } from 'helpers/utils';
 
 const CategorySection = () => {
 	const queryClient = useQueryClient();
@@ -111,18 +113,20 @@ const CategorySection = () => {
 			})
 		);
 
-		console.log(data?.thumbnail[0]);
 		if (data.thumbnail && data.thumbnail.length > 0) {
 			const file = data.thumbnail[0]; // Accessing the first (and only) file in the fileList
 			formData.append('thumbnail', file);
 		}
 		try {
 			const res = await mutationAddCategory.mutateAsync(formData);
-			setLoading(false);
+
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
-		} catch (error: any) {
-			console.log(error);
 			setLoading(false);
+			toast.success('Successfully Added Category');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
 		}
 	};
 
@@ -133,9 +137,11 @@ const CategorySection = () => {
 			const res = await mutationDeleteCategory.mutateAsync(id);
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
 			setLoading(false);
+			toast.success('Successfully Deleted Category');
 		} catch (error: any) {
-			console.log(error);
 			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
 		}
 	};
 
@@ -169,9 +175,11 @@ const CategorySection = () => {
 			});
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
 			setLoading(false);
+			toast.success('Successfully Edited Category ');
 		} catch (error: any) {
-			console.log(error);
 			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
 		}
 	};
 
@@ -182,18 +190,20 @@ const CategorySection = () => {
 
 		formData.append('id', CurrCategory._id);
 
-		console.log(data?.thumbnail[0]);
 		if (data.thumbnail && data.thumbnail.length > 0) {
 			const file = data.thumbnail[0]; // Accessing the first (and only) file in the fileList
 			formData.append('thumbnail', file);
 		} else return;
 		try {
 			const res = await mutationEditImage.mutateAsync(formData);
-			setLoading(false);
+
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
-		} catch (error: any) {
-			console.log(error);
 			setLoading(false);
+			toast.success('Successfully Edited Category Image');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
 		}
 	};
 	useEffect(() => {
@@ -273,6 +283,7 @@ const CategorySection = () => {
 			</Stack>
 			{openForm && (
 				<DialogModal
+					fullScreen
 					children={<Form onSubmitForm={onSubmit} />}
 					onClose={() => setOpenForm(false)}
 					open={openForm}
@@ -291,6 +302,7 @@ const CategorySection = () => {
 
 			{openEditForm && (
 				<DialogModal
+					fullScreen
 					children={<FormEdit category={CurrCategory} onSubmitForm={editCategoryHandler} />}
 					onClose={handleOnCloseEdit}
 					open={openEditForm}
@@ -300,6 +312,7 @@ const CategorySection = () => {
 
 			{openEditThumbnail && (
 				<DialogModal
+					fullScreen
 					children={<ThumbnailEdit onSubmitForm={thumbnailCategoryHandler} />}
 					onClose={handleOnCloseEditImage}
 					open={openEditThumbnail}

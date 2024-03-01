@@ -3,7 +3,9 @@ import Albums from 'Pages/Albums/Albums';
 import Analytics from 'Pages/Analytics/Analytics';
 import Categories from 'Pages/Categories/Categories';
 import Podcasts from 'Pages/Podcasts/Podcasts';
+import Profile from 'Pages/Profile/Profile';
 import ActionLoader from 'components/UI/ActionLoader';
+import AlbumDetails from 'components/musiclyTheme/albums/partials/AlbumDetails';
 import CategoryDetails from 'components/musiclyTheme/categories/partials/CategoryDetails';
 import { Resources } from 'enums/rosources';
 import { fetchServices } from 'framework/services';
@@ -34,15 +36,19 @@ const Listing: React.FC<Props> = () => {
 
 	const renderEditForm = () => {
 		if (!feature) return null;
+
 		if (feature.name === Resources.CATEGORIES) return <CategoryDetails />;
+		if (feature.name === Resources.ALBUMS) return <AlbumDetails />;
 	};
 
 	const renderList = () => {
 		if (!feature) return null;
+
 		if (feature.name === Resources.ANALYTICS) return <Analytics />;
 		if (feature.name === Resources.ALBUMS) return <Albums />;
 		if (feature.name === Resources.CATEGORIES) return <Categories />;
 		if (feature.name === Resources.PODCASTS) return <Podcasts />;
+		if (feature.name === Resources.PROFILE) return <Profile />;
 	};
 
 	return (

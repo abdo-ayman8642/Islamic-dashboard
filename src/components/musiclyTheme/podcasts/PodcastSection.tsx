@@ -14,6 +14,8 @@ import FormDelete from './partials/FormDelete';
 import ThumbnailEdit from './partials/ThumbnailEdit';
 import SearchField from 'components/Header/partials/SearchField';
 import { Audio } from 'models/api';
+import toast from 'react-hot-toast';
+import { getErrorTranslation } from 'helpers/utils';
 
 const PodcastSection = () => {
 	const queryClient = useQueryClient();
@@ -92,8 +94,6 @@ const PodcastSection = () => {
 		setOpenForm(false);
 		setLoading(true);
 
-		console.log(data);
-
 		formData.append(
 			'data',
 			JSON.stringify({
@@ -127,9 +127,12 @@ const PodcastSection = () => {
 		try {
 			const res = await mutationAddAudio.mutateAsync(formData);
 			setLoading(false);
+			toast.success('Successfully Added Audio');
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
 		} catch (error: any) {
 			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
 		}
 	};
 
@@ -140,9 +143,11 @@ const PodcastSection = () => {
 			const res = await mutationDeleteAudio.mutateAsync(id);
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
 			setLoading(false);
+			toast.success('Successfully Deleted Audio');
 		} catch (error: any) {
-			console.log(error);
 			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
 		}
 	};
 
@@ -177,9 +182,11 @@ const PodcastSection = () => {
 			});
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
 			setLoading(false);
+			toast.success('Successfully Edited Audio');
 		} catch (error: any) {
-			console.log(error);
 			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
 		}
 	};
 
@@ -190,28 +197,25 @@ const PodcastSection = () => {
 
 		formData.append('id', CurrAudio._id);
 
-		console.log(data?.thumbnail[0]);
 		if (data.thumbnail && data.thumbnail.length > 0) {
 			const file = data.thumbnail[0]; // Accessing the first (and only) file in the fileList
 			formData.append('thumbnail', file);
 		} else return;
 		try {
 			const res = await mutationEditImage.mutateAsync(formData);
-			setLoading(false);
+
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
-		} catch (error: any) {
-			console.log(error);
 			setLoading(false);
+			toast.success('Successfully Edited Audio Image');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
 		}
 	};
 
 	const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchTerm(e.target.value);
-	};
-
-	const onSubmit = (data: any) => {
-		console.log(data);
-		setOpenForm(false);
 	};
 
 	const hanldeClickAudio = (data: Audio) => {
@@ -276,6 +280,7 @@ const PodcastSection = () => {
 			</Stack>
 			{openForm && (
 				<DialogModal
+					fullScreen
 					children={<Form onSubmitForm={addAudioHandler} />}
 					onClose={() => setOpenForm(false)}
 					open={openForm}
@@ -294,6 +299,7 @@ const PodcastSection = () => {
 
 			{openEditForm && (
 				<DialogModal
+					fullScreen
 					children={<FormEdit audio={CurrAudio} onSubmitForm={editAudioHandler} />}
 					onClose={handleOnCloseEdit}
 					open={openEditForm}
@@ -303,6 +309,7 @@ const PodcastSection = () => {
 
 			{openEditThumbnail && (
 				<DialogModal
+					fullScreen
 					children={<ThumbnailEdit onSubmitForm={thumbnailCategoryHandler} />}
 					onClose={handleOnCloseEditImage}
 					open={openEditThumbnail}
@@ -331,20 +338,6 @@ const PodcastSection = () => {
 									</div>
 								))}
 							</div>
-						</div>
-					</div>
-
-					<div style={{ display: 'flex', justifyContent: 'end' }}>
-						<div
-							style={{
-								marginTop: '20px',
-								backgroundColor: '#a6a6a6',
-								borderRadius: '5px',
-								padding: '5px 10px',
-								fontSize: 'smaller',
-								color: '#383838'
-							}}>
-							{'items'} {audios.length}
 						</div>
 					</div>
 				</div>

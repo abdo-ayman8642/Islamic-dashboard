@@ -33,7 +33,6 @@ interface Props {
 }
 
 const FormEdit: React.FC<Props> = ({ onSubmitForm, audio }) => {
-	console.log('audio', audio);
 	const {
 		register,
 		handleSubmit,
@@ -53,9 +52,9 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, audio }) => {
 	const onSubmit: SubmitHandler<FormValues> = (data) => {
 		onSubmitForm(data);
 	};
-	console.log(register('free'));
+
 	return (
-		<Container maxWidth="sm">
+		<Container maxWidth="md" sx={{ m: 0 }}>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Grid container spacing={2}>
 					<Grid item xs={12} sx={{ mt: 2 }}>
