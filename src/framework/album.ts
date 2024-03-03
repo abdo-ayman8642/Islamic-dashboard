@@ -1,4 +1,13 @@
-import { CREATE_ALBUM, DELETE_ALBUM, EDIT_ALBUM, GET_ALBUMS_BY_ID, GET_ALL_ALBUMS, UPDATE_IMAGE } from 'constants/api';
+import {
+	ADD_AUDIO_ALBUM,
+	CREATE_ALBUM,
+	DELETE_ALBUM,
+	EDIT_ALBUM,
+	GET_ALBUMS_BY_ID,
+	GET_ALL_ALBUMS,
+	REMOVE_AUDIO_ALBUM,
+	UPDATE_IMAGE
+} from 'constants/api';
 import axiosInstance from 'helpers/axiosInstance';
 
 export async function getAlbums({ queryKey }: any) {
@@ -28,8 +37,13 @@ export async function deleteAlbum({ query }: any) {
 	return response.data;
 }
 
-export async function removeAudioFromAlbum({ query }: any) {
-	const response = await axiosInstance.delete(DELETE_ALBUM + query);
+export async function removeAudioFromAlbum(data: any) {
+	const response = await axiosInstance.patch(REMOVE_AUDIO_ALBUM, data);
+	return response.data;
+}
+
+export async function addAudioFromAlbum(data: any) {
+	const response = await axiosInstance.patch(ADD_AUDIO_ALBUM, data);
 	return response.data;
 }
 

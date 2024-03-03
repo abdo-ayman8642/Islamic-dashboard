@@ -7,9 +7,9 @@ import MuiOutlineButton from 'components/UI/MuiOutlineButton';
 //import SmallLoader from "@/components/shared/SmallLoader";
 import AddIcon from '@mui/icons-material/Add';
 
-import { Album } from 'models/api';
+import { Album, Audio } from 'models/api';
 import { useParams } from 'react-router-dom';
-import { getAlbums, removeAudioFromAlbum } from 'framework/album';
+import { addAudioFromAlbum, getAlbums, removeAudioFromAlbum } from 'framework/album';
 import ExploreSection from 'components/musiclyTheme/explore/ExploreSection';
 import FormRemove from './FormRemove';
 import DialogModal from 'components/UI/DialogModal';
@@ -25,13 +25,22 @@ const AlbumDetails = () => {
 	const [openEditForm, setOpenEditForm] = useState<boolean>(false);
 	const [openEditThumbnail, setOpenEditThumbnail] = useState<boolean>(false);
 	const [openDeleteForm, setOpenDeleteForm] = useState<boolean>(false);
+	const [currAudio, setCurAudio] = useState<Audio | null>(null);
 	const urlParams = useParams();
 
 	let slug: string = urlParams[`Albumsslug`] as string;
 
-	const mutationDeleteAlbum = useMutation({
-		mutationFn: (id: string) => {
-			return removeAudioFromAlbum({ query: `/${id}` });
+	const mutationRemoveAudioAlbum = useMutation({
+		mutationFn: (data: any) => {
+			return removeAudioFromAlbum(data);
+		},
+		onSuccess: () => {
+			fetchCategory();
+		}
+	});
+	const mutationAddAudioAlbum = useMutation({
+		mutationFn: (data: any) => {
+			return addAudioFromAlbum(data);
 		},
 		onSuccess: () => {
 			fetchCategory();
@@ -66,20 +75,41 @@ const AlbumDetails = () => {
 		setOpenForm(false);
 	};
 
-	const deleteAlbumHandler = async (id: string) => {
+	const deleteAudioAlbumHandler = async (id: string) => {
 		setOpenDeleteForm(false);
 		setLoading(true);
 		try {
-			const res = await mutationDeleteAlbum.mutateAsync(id);
+			const res = await mutationRemoveAudioAlbum.mutateAsync({ albumId: id, audioId: currAudio?._id });
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
 			setLoading(false);
-			toast.success('Successfully Deleted Album');
+			toast.success('Successfully Removed Audio From Album');
 		} catch (error: any) {
 			setLoading(false);
 			const code: string = error.response.data.data;
 			toast.error(getErrorTranslation(code));
 		}
 	};
+
+	const addAudioAlbumHandler = async (id: string) => {
+		setOpenDeleteForm(false);
+		setLoading(true);
+		try {
+			const res = await mutationAddAudioAlbum.mutateAsync({ albumId: id, audioId: currAudio?._id });
+			if (res.Error) throw new Error(res.Message || 'Something went wrong');
+			setLoading(false);
+			toast.success('Successfully Added Audio To Album');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
+		}
+	};
+
+	const onRemoveHandler = (data: Audio) => {
+		setOpenDeleteForm(true);
+		setCurAudio(data);
+	};
+	console.log(currAudio);
 	// const handleOpenDeleteAlbum = (data: any) => {
 	// 	setCurrCategory(data);
 	// 	setOpenDeleteForm(true);
@@ -221,11 +251,11 @@ const AlbumDetails = () => {
 						</div>
 					</div>
 				</div>
-				<ExploreSection audios={album?.audios!} onRemove={() => setOpenDeleteForm(true)} />
+				<ExploreSection audios={album?.audios!} onRemove={onRemoveHandler} />
 			</div>
 			{openDeleteForm && (
 				<DialogModal
-					children={<FormRemove onSubmitForm={deleteAlbumHandler} id={album._id} />}
+					children={<FormRemove onSubmitForm={deleteAudioAlbumHandler} id={album._id} />}
 					onClose={() => setOpenDeleteForm(false)}
 					open={openDeleteForm}
 					title="Remove Audio From Album"
