@@ -9,6 +9,7 @@ import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import AlbumIcon from '@mui/icons-material/Album';
 import CategoryIcon from '@mui/icons-material/Category';
 import Person2Icon from '@mui/icons-material/Person2';
+import GroupIcon from '@mui/icons-material/Group';
 interface Props {
 	name: string;
 	icon: string;
@@ -33,6 +34,7 @@ const MenuItem: React.FC<Props> = ({ name, icon, color, slug, action, setOpenDra
 		if (icon === 'ProfileIcon') return <Person2Icon sx={{ fill: color === 'white' ? '#FFFFFF' : '#232323' }} />;
 		if (icon === 'QueryStatsIcon') return <QueryStatsIcon sx={{ fill: color === 'white' ? '#FFFFFF' : '#232323' }} />;
 		if (icon === 'CalendarTodayIcon') return <CategoryIcon sx={{ fill: color === 'white' ? '#FFFFFF' : '#232323' }} />;
+		if (icon === 'GroupIcon') return <GroupIcon sx={{ fill: color === 'white' ? '#FFFFFF' : '#232323' }} />;
 
 		return null;
 	};

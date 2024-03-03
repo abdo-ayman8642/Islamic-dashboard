@@ -7,6 +7,7 @@ import {
 	GET_ALL_PODCASTS,
 	GET_CATEGORY_ALBUMS_BY_ID,
 	GET_CATEGORY_BY_ID,
+	GET_USERS,
 	RESET_PASSWORD
 } from '../constants/api';
 import axiosInstance from 'helpers/axiosInstance';
@@ -26,6 +27,12 @@ export async function getPodcastById({ queryKey }: any) {
 export async function getPopularPodcasts({ queryKey }: any) {
 	const { query } = queryKey[1];
 	const response = await axiosInstance.get(GET_CATEGORY_ALBUMS_BY_ID + query);
+	return response.data;
+}
+
+export async function getUsers({ queryKey }: any) {
+	const { query } = queryKey[1];
+	const response = await axiosInstance.get(GET_USERS + query);
 	return response.data;
 }
 

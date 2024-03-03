@@ -48,5 +48,15 @@
 		"precedence": "5",
 		"parentID": "-1",
 		"children": []
+	},
+	{
+		"id": 6,
+		"name": "Users",
+		"icon": "GroupIcon",
+		"slug": "users",
+		"singleName": "Users",
+		"precedence": "6",
+		"parentID": "-1",
+		"children": []
 	}
 ]

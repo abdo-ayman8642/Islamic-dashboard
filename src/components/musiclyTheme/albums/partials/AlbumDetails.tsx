@@ -2,10 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { CircularProgress, Grid, Stack } from '@mui/material';
-import MuiOutlineButton from 'components/UI/MuiOutlineButton';
+import { CircularProgress } from '@mui/material';
 //import SmallLoader from "@/components/shared/SmallLoader";
-import AddIcon from '@mui/icons-material/Add';
 
 import { Album, Audio } from 'models/api';
 import { useParams } from 'react-router-dom';
@@ -15,18 +13,22 @@ import FormRemove from './FormRemove';
 import DialogModal from 'components/UI/DialogModal';
 import toast from 'react-hot-toast';
 import { getErrorTranslation } from 'helpers/utils';
+import FormAdd from './FormAdd';
+import { getPodcasts } from 'framework/podcast';
 
 const AlbumDetails = () => {
 	const queryClient = useQueryClient();
 	const [loading, setLoading] = useState(false);
 	const [album, setAlbum] = useState<Album | null>(null);
-	const [searchTerm, setSearchTerm] = useState<string>('');
-	const [openForm, setOpenForm] = useState<boolean>(false);
+
 	const [openEditForm, setOpenEditForm] = useState<boolean>(false);
 	const [openEditThumbnail, setOpenEditThumbnail] = useState<boolean>(false);
+	const [audios, setAudios] = useState<Audio[]>([]);
 	const [openDeleteForm, setOpenDeleteForm] = useState<boolean>(false);
+	const [openForm, setOpenForm] = useState<boolean>(false);
 	const [currAudio, setCurAudio] = useState<Audio | null>(null);
 	const urlParams = useParams();
+	const [error, setError] = useState(false);
 
 	let slug: string = urlParams[`Albumsslug`] as string;
 
@@ -47,6 +49,26 @@ const AlbumDetails = () => {
 		}
 	});
 
+	const fetchAudios = useCallback(async () => {
+		setLoading(true);
+
+		try {
+			const response = await queryClient.fetchQuery(['audios', { query: `` }], getPodcasts);
+			setAudios(response.data);
+			setLoading(false);
+		} catch (err: Error | any) {
+			// setAlert({
+			// 	open: true,
+			// 	message: err?.response?.data?.Message || err.message || 'Something went wrong',
+			// 	type: 'error'
+			// });
+			setLoading(false);
+			setError(true);
+		}
+
+		// eslint-disable-next-line
+	}, []);
+
 	const fetchCategory = useCallback(async () => {
 		setLoading(true);
 
@@ -60,20 +82,13 @@ const AlbumDetails = () => {
 		}
 
 		// eslint-disable-next-line
-	}, [searchTerm]);
+	}, []);
 
 	useEffect(() => {
 		fetchCategory();
+		fetchAudios();
 		// eslint-disable-next-line
-	}, [searchTerm]);
-
-	const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchTerm(e.target.value);
-	};
-
-	const onSubmit = (data: any) => {
-		setOpenForm(false);
-	};
+	}, []);
 
 	const deleteAudioAlbumHandler = async (id: string) => {
 		setOpenDeleteForm(false);
@@ -90,11 +105,12 @@ const AlbumDetails = () => {
 		}
 	};
 
-	const addAudioAlbumHandler = async (id: string) => {
-		setOpenDeleteForm(false);
+	const addAudioAlbumHandler = async (data: any) => {
+		console.log(data);
+		setOpenForm(false);
 		setLoading(true);
 		try {
-			const res = await mutationAddAudioAlbum.mutateAsync({ albumId: id, audioId: currAudio?._id });
+			const res = await mutationAddAudioAlbum.mutateAsync({ albumId: album?._id, audioId: data?.audio });
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
 			setLoading(false);
 			toast.success('Successfully Added Audio To Album');
@@ -151,25 +167,6 @@ const AlbumDetails = () => {
 	}
 	return (
 		<section className="trending__section pr-24 pl-24 pb-100">
-			<Stack
-				component="main"
-				direction={'row'}
-				justifyContent={'center'}
-				alignItems={'center'}
-				useFlexGap
-				sx={{ m: '20px', flexDirection: { xs: 'column', lg: 'row' } }}>
-				<Grid container justifyContent={'flex-end'} sx={{ display: { lg: 'flex' } }}>
-					<MuiOutlineButton
-						variant="outlined"
-						color="inherit"
-						size="small"
-						sx={{ px: 4, py: 2 }}
-						startIcon={<AddIcon sx={{ fill: '#232323' }} />}
-						onClick={() => setOpenForm(true)}>
-						Add New
-					</MuiOutlineButton>
-				</Grid>
-			</Stack>
 			{/* {openForm && (
 				<DialogModal
 					children={<Form onSubmitForm={onSubmit} />}
@@ -251,7 +248,7 @@ const AlbumDetails = () => {
 						</div>
 					</div>
 				</div>
-				<ExploreSection audios={album?.audios!} onRemove={onRemoveHandler} />
+				<ExploreSection audios={album?.audios!} onRemove={onRemoveHandler} onAdd={() => setOpenForm(true)} />
 			</div>
 			{openDeleteForm && (
 				<DialogModal
@@ -259,6 +256,25 @@ const AlbumDetails = () => {
 					onClose={() => setOpenDeleteForm(false)}
 					open={openDeleteForm}
 					title="Remove Audio From Album"
+				/>
+			)}
+			{openForm && (
+				<DialogModal
+					fullScreen
+					children={
+						<FormAdd
+							onSubmitForm={addAudioAlbumHandler}
+							audios={audios.map((audio) => {
+								return {
+									label: audio.title[0].value,
+									value: audio._id
+								};
+							})}
+						/>
+					}
+					onClose={() => setOpenForm(false)}
+					open={openForm}
+					title="Add Audio To Album"
 				/>
 			)}
 		</section>

@@ -4,6 +4,7 @@ import Analytics from 'Pages/Analytics/Analytics';
 import Categories from 'Pages/Categories/Categories';
 import Podcasts from 'Pages/Podcasts/Podcasts';
 import Profile from 'Pages/Profile/Profile';
+import Users from 'Pages/Users/Profile';
 import ActionLoader from 'components/UI/ActionLoader';
 import AlbumDetails from 'components/musiclyTheme/albums/partials/AlbumDetails';
 import CategoryDetails from 'components/musiclyTheme/categories/partials/CategoryDetails';
@@ -49,6 +50,7 @@ const Listing: React.FC<Props> = () => {
 		if (feature.name === Resources.CATEGORIES) return <Categories />;
 		if (feature.name === Resources.PODCASTS) return <Podcasts />;
 		if (feature.name === Resources.PROFILE) return <Profile />;
+		if (feature.name === Resources.USERS) return <Users />;
 	};
 
 	return (

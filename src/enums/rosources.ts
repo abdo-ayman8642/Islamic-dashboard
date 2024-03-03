@@ -3,5 +3,6 @@ export enum Resources {
 	CATEGORIES = 'Categories',
 	ALBUMS = 'Albums',
 	PODCASTS = 'Podcasts',
-	PROFILE = 'Profile'
+	PROFILE = 'Profile',
+	USERS = 'Users'
 }
