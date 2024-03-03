@@ -10,6 +10,9 @@ import AddIcon from '@mui/icons-material/Add';
 
 import { Category } from 'models/api';
 import { useParams } from 'react-router-dom';
+import ExploreSection from './explore/ExploreSection';
+import DialogModal from 'components/UI/DialogModal';
+import FormRemove from './FormRemove';
 
 const CategoryDetails = () => {
 	const queryClient = useQueryClient();
@@ -50,6 +53,21 @@ const CategoryDetails = () => {
 
 	const onSubmit = (data: any) => {
 		setOpenForm(false);
+	};
+
+	const deleteAlbumHandler = async (id: string) => {
+		setOpenDeleteForm(false);
+		setLoading(true);
+		try {
+			//const res = await mutationDeleteAlbum.mutateAsync(id);
+			//if (res.Error) throw new Error(res.Message || 'Something went wrong');
+			setLoading(false);
+			//toast.success('Successfully Deleted Album');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			//toast.error(getErrorTranslation(code));
+		}
 	};
 
 	// const handleOpenDeleteAlbum = (data: any) => {
@@ -192,6 +210,15 @@ const CategoryDetails = () => {
             </div> */}
 						</div>
 					</div>
+					<ExploreSection albums={category.albums} onRemove={() => setOpenDeleteForm(true)} />
+					{openDeleteForm && (
+						<DialogModal
+							children={<FormRemove onSubmitForm={deleteAlbumHandler} id={category._id} />}
+							onClose={() => setOpenDeleteForm(false)}
+							open={openDeleteForm}
+							title="Remove Album From Category"
+						/>
+					)}
 				</div>
 			</div>
 		</section>

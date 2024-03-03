@@ -5,13 +5,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Container, Grid, TextField } from '@mui/material';
 
 interface FormData {
-	currentPassword: string;
+	password: string;
 	newPassword: string;
 	confirmNewPassword: string;
 }
 
 const schema = yup.object().shape({
-	currentPassword: yup.string().required('Current password is required'),
+	password: yup.string().required('Current password is required'),
 	newPassword: yup
 		.string()
 		.required('New password is required')
@@ -45,15 +45,15 @@ const FormChange: React.FC<Props> = ({ onSubmitForm }) => {
 				<Grid container spacing={2} sx={{ mt: 2 }}>
 					<Grid item xs={12}>
 						<TextField
-							id="currentPassword"
+							id="password"
 							label="Current Password"
 							type="password"
 							variant="outlined"
 							multiline
 							fullWidth
-							{...register('currentPassword')}
-							error={!!errors.currentPassword}
-							helperText={errors.currentPassword?.message}
+							{...register('password')}
+							error={!!errors.password}
+							helperText={errors.password?.message}
 						/>
 					</Grid>
 					<Grid item xs={12}>

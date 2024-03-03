@@ -27,6 +27,7 @@ const PodcastSection = () => {
 	const [openEditForm, setOpenEditForm] = useState<boolean>(false);
 	const [openDeleteForm, setOpenDeleteForm] = useState<boolean>(false);
 	const [openEditThumbnail, setOpenEditThumbnail] = useState<boolean>(false);
+	const [error, setError] = useState(false);
 
 	const mutationAddAudio = useMutation({
 		mutationFn: (createInput: FormData) => {
@@ -78,6 +79,7 @@ const PodcastSection = () => {
 			// 	type: 'error'
 			// });
 			setLoading(false);
+			setError(true);
 		}
 
 		// eslint-disable-next-line
@@ -246,6 +248,7 @@ const PodcastSection = () => {
 		setOpenEditForm(false);
 	};
 
+	if (error) return <div>Error</div>;
 	return (
 		<section className="trending__section hotsong__section pr-24 pl-24 pb-100">
 			<Stack

@@ -1,8 +1,8 @@
-export const BASE_URL = 'https://islamic-backend-3.onrender.com';
+export const BASE_URL = 'http://localhost:3003';
 
 // Authentication
 export const LOGIN = '/api/user/loginAdmin';
-export const REGISTER = '/user/registerAdmin';
+export const FORGET = '/api/user/forget';
 
 // categories
 export const GET_ALL_CATEGORIES = '/api/categories';
@@ -31,3 +31,8 @@ export const CREATE_PODCAST = '/api/audios/create';
 export const EDIT_PODCAST = '/api/audios/update';
 export const EDIT_PODCAST_IMAGE = '/api/audios/updateThumbnail';
 export const DELETE_PODCAST = '/api/audios/delete';
+
+//user
+export const EDIT_USER = '/api/user/edit';
+export const CHANGE_PASSWORD = '/api/user/change-password';
+export const RESET_PASSWORD = '/api/user/reset-password';

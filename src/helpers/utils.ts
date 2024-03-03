@@ -376,7 +376,9 @@ export function getErrorTranslation(code: string): string {
 		'#1.1.22': 'You must subscribe to access this audio',
 		'#1.1.23': 'You must add a unique slug',
 		'#1.1.24': 'Only support image files',
-		'#1.1.25': 'Only support audio files'
+		'#1.1.25': 'Only support audio files',
+		'#1.1.26': 'Invalid Token',
+		'#1.1.27': 'Time Out - Token Expired'
 	};
 
 	if (errorTranslations.hasOwnProperty(code)) {

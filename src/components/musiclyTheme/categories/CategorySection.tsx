@@ -27,6 +27,7 @@ const CategorySection = () => {
 	const [openEditForm, setOpenEditForm] = useState<boolean>(false);
 	const [openEditThumbnail, setOpenEditThumbnail] = useState<boolean>(false);
 	const [openDeleteForm, setOpenDeleteForm] = useState<boolean>(false);
+	const [error, setError] = useState(false);
 
 	const mutationAddCategory = useMutation({
 		mutationFn: (createInput: FormData) => {
@@ -77,6 +78,7 @@ const CategorySection = () => {
 		} catch (err: Error | any) {
 			// Handle errors here
 			setLoading(false);
+			setError(true);
 		}
 
 		// eslint-disable-next-line
@@ -249,6 +251,9 @@ const CategorySection = () => {
 		setCurrCategory({} as Category);
 		setOpenEditThumbnail(false);
 	};
+
+	if (error) return <div>Error</div>;
+
 	return (
 		<section className="trending__section pr-24 pl-24 pb-100">
 			<Stack

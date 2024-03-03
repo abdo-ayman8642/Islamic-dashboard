@@ -3,32 +3,72 @@
 import { useState } from 'react';
 import { useMutation } from 'react-query';
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
-import { editImage } from 'framework/podcast';
 
 import useAuthStore from 'store/auth';
-import { formatDate } from 'helpers/utils';
+import { formatDate, getErrorTranslation } from 'helpers/utils';
 import FormEdit from './partials/FormEdit';
 import DialogModal from 'components/UI/DialogModal';
 import FormChange from './partials/FormChange';
+import toast from 'react-hot-toast';
+import { changeUserPassword, editUser } from 'framework/user';
+import { LocalStorage } from 'enums/localStorage';
 
-const PodcastSection = () => {
+const ProfileSection = () => {
 	const [loading, setLoading] = useState(false);
 	const [openChangePassword, setOpenChangePassword] = useState<boolean>(false);
 	const [openEditProfile, setOpenEditProfile] = useState<boolean>(false);
 
-	const { session } = useAuthStore();
+	const { session, setSession } = useAuthStore();
 
-	const mutationEditImage = useMutation({
+	const mutationChangePassword = useMutation({
 		mutationFn: (data: any) => {
-			return editImage(data);
-		},
-		onSuccess: (data: any) => {
-			console.log(data);
-			// setProfile(data);
+			return changeUserPassword(data);
 		}
 	});
 
-	console.log(session);
+	const mutationEditProfile = useMutation({
+		mutationFn: (data: any) => {
+			return editUser(data);
+		},
+		onSuccess: (data: any) => {
+			setSession(data.data.user);
+			localStorage.setItem(LocalStorage.PROFILE, JSON.stringify(data.data.user));
+		}
+	});
+
+	const editProfile = async (data: any) => {
+		setOpenEditProfile(false);
+
+		setLoading(true);
+		try {
+			const res = await mutationEditProfile.mutateAsync(data);
+			setLoading(false);
+
+			toast.success('Successfully Edited Profile');
+			if (res?.Error) throw new Error(res?.Message || 'Something went wrong');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
+		}
+	};
+
+	const changePassword = async (data: any) => {
+		setOpenChangePassword(false);
+
+		setLoading(true);
+		try {
+			const res = await mutationChangePassword.mutateAsync(data);
+			setLoading(false);
+
+			toast.success('Successfully Changed Password');
+			if (res?.Error) throw new Error(res?.Message || 'Something went wrong');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
+		}
+	};
 
 	const profileTextStyle = {
 		color: '#333'
@@ -67,7 +107,7 @@ const PodcastSection = () => {
 							{openEditProfile && (
 								<DialogModal
 									fullScreen
-									children={<FormEdit profile={session} onSubmitForm={null!} />}
+									children={<FormEdit profile={session} onSubmitForm={editProfile} />}
 									onClose={() => setOpenEditProfile(false)}
 									open={openEditProfile}
 									title="Edit Profile"
@@ -76,7 +116,7 @@ const PodcastSection = () => {
 							{openChangePassword && (
 								<DialogModal
 									fullScreen
-									children={<FormChange onSubmitForm={null!} />}
+									children={<FormChange onSubmitForm={changePassword} />}
 									onClose={() => setOpenChangePassword(false)}
 									open={openChangePassword}
 									title="Change Password"
@@ -106,4 +146,4 @@ const PodcastSection = () => {
 	);
 };
 
-export default PodcastSection;
+export default ProfileSection;

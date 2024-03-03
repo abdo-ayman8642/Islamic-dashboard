@@ -46,7 +46,7 @@ interface Information {
 
 export interface Category {
 	_id: string;
-	albums: string[];
+	albums: Album[];
 	description: Information[];
 	title: Information[];
 	thumbnail: string;

@@ -1,8 +1,8 @@
-import PodcastSection from 'components/musiclyTheme/profile/PodcastSection';
+import ProfileSection from 'components/musiclyTheme/profile/ProfileSection';
 
 const Profile: React.FC = () => {
 	// if (loading) return <ActionLoader position="fixed" />;
-	return <PodcastSection />;
+	return <ProfileSection />;
 };
 
 export default Profile;

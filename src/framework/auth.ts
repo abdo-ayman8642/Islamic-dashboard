@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { BASE_URL, LOGIN } from 'constants/api';
+import { BASE_URL, FORGET, LOGIN } from 'constants/api';
 
 export async function signIn(params: any) {
 	let { data } = params;
@@ -8,6 +8,15 @@ export async function signIn(params: any) {
 		password: data.password
 	};
 	const response = await axios.post(BASE_URL + LOGIN, _params);
+	return response.data;
+}
+
+export async function forget(params: any) {
+	let { data } = params;
+	const _params = {
+		email: data.email
+	};
+	const response = await axios.post(BASE_URL + FORGET, _params);
 	return response.data;
 }
 
