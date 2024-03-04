@@ -14,7 +14,8 @@ import DialogModal from 'components/UI/DialogModal';
 import toast from 'react-hot-toast';
 import { getErrorTranslation } from 'helpers/utils';
 import FormAdd from './FormAdd';
-import { getPodcasts } from 'framework/podcast';
+import { addAudio, getPodcasts } from 'framework/podcast';
+import FormCreateAudio from './FormCreateAudio';
 
 const AlbumDetails = () => {
 	const queryClient = useQueryClient();
@@ -26,6 +27,7 @@ const AlbumDetails = () => {
 	const [audios, setAudios] = useState<Audio[]>([]);
 	const [openDeleteForm, setOpenDeleteForm] = useState<boolean>(false);
 	const [openForm, setOpenForm] = useState<boolean>(false);
+	const [openCreateForm, setOpenCreateForm] = useState<boolean>(false);
 	const [currAudio, setCurAudio] = useState<Audio | null>(null);
 	const urlParams = useParams();
 	const [error, setError] = useState(false);
@@ -37,7 +39,7 @@ const AlbumDetails = () => {
 			return removeAudioFromAlbum(data);
 		},
 		onSuccess: () => {
-			fetchCategory();
+			fetchAlbum();
 		}
 	});
 	const mutationAddAudioAlbum = useMutation({
@@ -45,7 +47,16 @@ const AlbumDetails = () => {
 			return addAudioFromAlbum(data);
 		},
 		onSuccess: () => {
-			fetchCategory();
+			fetchAlbum();
+		}
+	});
+
+	const mutationCreateAudio = useMutation({
+		mutationFn: (createInput: FormData) => {
+			return addAudio(createInput);
+		},
+		onSuccess: () => {
+			fetchAlbum();
 		}
 	});
 
@@ -69,7 +80,7 @@ const AlbumDetails = () => {
 		// eslint-disable-next-line
 	}, []);
 
-	const fetchCategory = useCallback(async () => {
+	const fetchAlbum = useCallback(async () => {
 		setLoading(true);
 
 		try {
@@ -85,7 +96,7 @@ const AlbumDetails = () => {
 	}, []);
 
 	useEffect(() => {
-		fetchCategory();
+		fetchAlbum();
 		fetchAudios();
 		// eslint-disable-next-line
 	}, []);
@@ -98,6 +109,54 @@ const AlbumDetails = () => {
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
 			setLoading(false);
 			toast.success('Successfully Removed Audio From Album');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
+		}
+	};
+
+	const createAudioHandler = async (data: any) => {
+		const formData = new FormData();
+		setOpenCreateForm(false);
+		setLoading(true);
+
+		formData.append(
+			'data',
+			JSON.stringify({
+				title: [
+					{
+						lang: 'en',
+						value: data.titleEn
+					},
+					{
+						lang: 'ar',
+						value: data.titleAr
+					}
+				],
+				description: [
+					{
+						lang: 'en',
+						value: data.descriptionEn
+					},
+					{
+						lang: 'ar',
+						value: data.descriptionAr
+					}
+				],
+
+				slug: data.slug,
+				albums: [album?._id]
+			})
+		);
+
+		data.thumbnail.length > 0 && formData.append('thumbnail', data.thumbnail[0]);
+		data.audio.length > 0 && formData.append('audio', data.audio[0]);
+		try {
+			const res = await mutationCreateAudio.mutateAsync(formData);
+			setLoading(false);
+			toast.success('Successfully Created Audio Under This Album');
+			if (res.Error) throw new Error(res.Message || 'Something went wrong');
 		} catch (error: any) {
 			setLoading(false);
 			const code: string = error.response.data.data;
@@ -248,7 +307,12 @@ const AlbumDetails = () => {
 						</div>
 					</div>
 				</div>
-				<ExploreSection audios={album?.audios!} onRemove={onRemoveHandler} onAdd={() => setOpenForm(true)} />
+				<ExploreSection
+					audios={album?.audios!}
+					onRemove={onRemoveHandler}
+					onAdd={() => setOpenForm(true)}
+					onCreate={() => setOpenCreateForm(true)}
+				/>
 			</div>
 			{openDeleteForm && (
 				<DialogModal
@@ -256,6 +320,15 @@ const AlbumDetails = () => {
 					onClose={() => setOpenDeleteForm(false)}
 					open={openDeleteForm}
 					title="Remove Audio From Album"
+				/>
+			)}
+			{openCreateForm && (
+				<DialogModal
+					fullScreen
+					children={<FormCreateAudio onSubmitForm={createAudioHandler} />}
+					onClose={() => setOpenCreateForm(false)}
+					open={openCreateForm}
+					title="Add New Audio To Album"
 				/>
 			)}
 			{openForm && (

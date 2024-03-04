@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://islamic-backend-3.onrender.com';
+export const BASE_URL = 'https://islamic-backend-3.onrender.com' && 'http://localhost:3003';
 
 // Authentication
 export const LOGIN = '/api/user/loginAdmin';
@@ -9,6 +9,8 @@ export const GET_ALL_CATEGORIES = '/api/categories';
 export const GET_CATEGORY_BY_ID = '/category/getCategory';
 export const GET_CATEGORY_ALBUMS_BY_ID = '/category/getCategoryAlbums';
 export const CREATE_CATEGORY = '/api/categories/create';
+export const ADD_ALBUM_CATEGORY = '/api/categories/addAlbum';
+export const REMOVE_ALBUM_CATEGORY = '/api/categories/removeAlbum';
 export const ADD_CATEGORY_ALBUM = '/api/albums/create';
 export const EDIT_CATEGORY = '/api/categories/update';
 export const DELETE_CATEGORY = '/api/categories/delete';
@@ -36,6 +38,7 @@ export const DELETE_PODCAST = '/api/audios/delete';
 
 //user
 export const EDIT_USER = '/api/user/edit';
+export const DELETE_USER = '/api/user/delete';
 export const GET_USERS = '/api/user/users';
 export const CHANGE_PASSWORD = '/api/user/change-password';
 export const RESET_PASSWORD = '/api/user/reset-password';

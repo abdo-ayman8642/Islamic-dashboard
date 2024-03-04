@@ -393,19 +393,21 @@ const AlbumSection = () => {
 							</div>
 						</div>
 					</div>
-					<div style={{ display: 'flex', justifyContent: 'end' }}>
-						<div
-							style={{
-								marginTop: '20px',
-								backgroundColor: '#a6a6a6',
-								borderRadius: '5px',
-								padding: '5px 10px',
-								fontSize: 'smaller',
-								color: '#383838'
-							}}>
-							{'items'} {albums.length}
+					{albums.length > 0 && (
+						<div style={{ display: 'flex', justifyContent: 'end' }}>
+							<div
+								style={{
+									marginTop: '20px',
+									backgroundColor: '#a6a6a6',
+									borderRadius: '5px',
+									padding: '5px 10px',
+									fontSize: 'smaller',
+									color: '#383838'
+								}}>
+								{'items'} {albums.length}
+							</div>
 						</div>
-					</div>
+					)}
 				</div>
 			)}
 		</section>

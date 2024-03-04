@@ -1,10 +1,11 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import {
 	Box,
 	CircularProgress,
+	IconButton,
 	Table,
 	TableBody,
 	TableCell,
@@ -16,8 +17,12 @@ import {
 import Paper from '@mui/material/Paper';
 import useAuthStore from 'store/auth';
 
-import { getUsers } from 'framework/user';
-import { formatDate } from 'helpers/utils';
+import { deleteUser, getUsers } from 'framework/user';
+import { formatDate, getErrorTranslation } from 'helpers/utils';
+import { Delete } from '@mui/icons-material';
+import DialogModal from 'components/UI/DialogModal';
+import FormDelete from './partials/FormDelete';
+import toast from 'react-hot-toast';
 
 const UsersSection = () => {
 	const queryClient = useQueryClient();
@@ -26,8 +31,18 @@ const UsersSection = () => {
 	const [users, setUsers] = useState<any[]>([]);
 
 	const [error, setError] = useState<boolean>(false);
+	const [openDelete, setOpenDelete] = useState<string | null>(null);
 
 	const { session, setSession } = useAuthStore();
+
+	const mutationDeleteUser = useMutation({
+		mutationFn: (data: any) => {
+			return deleteUser(data);
+		},
+		onSuccess: () => {
+			fetchUsers();
+		}
+	});
 
 	const fetchUsers = useCallback(async () => {
 		setLoading(true);
@@ -50,9 +65,27 @@ const UsersSection = () => {
 		// eslint-disable-next-line
 	}, []);
 
+	const deleteUserhandler = async (data: any) => {
+		const id = openDelete;
+		setOpenDelete(null);
+		console.log(id);
+		setLoading(true);
+		try {
+			const res = await mutationDeleteUser.mutateAsync({ id });
+			setLoading(false);
+
+			toast.success('Successfully Deleted User');
+			if (res?.Error) throw new Error(res?.Message || 'Something went wrong');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
+		}
+	};
+
 	if (error) return <div>Error</div>;
-	function createData(name: string, email: string, role: string, createdAt: string, updatedAt: string) {
-		return { name, email, role, createdAt, updatedAt };
+	function createData(id: string, name: string, email: string, role: string, createdAt: string, updatedAt: string) {
+		return { id, name, email, role, createdAt, updatedAt };
 	}
 
 	// [
@@ -65,6 +98,7 @@ const UsersSection = () => {
 
 	const rows = users.map((user) =>
 		createData(
+			user?._id,
 			user?.name,
 			user?.email,
 			user?.role === '62f86e900860a1d7140f99d2' ? 'Admin' : 'User',
@@ -88,10 +122,11 @@ const UsersSection = () => {
 									<TableHead>
 										<TableRow>
 											<TableCell>Name</TableCell>
-											<TableCell align="right">Email</TableCell>
-											<TableCell align="right">Role</TableCell>
-											<TableCell align="right">Created At</TableCell>
-											<TableCell align="right">Updated At</TableCell>
+											<TableCell>Email</TableCell>
+											<TableCell>Role</TableCell>
+											<TableCell>Created At</TableCell>
+											<TableCell>Updated At</TableCell>
+											<TableCell>Actions</TableCell>
 										</TableRow>
 									</TableHead>
 									<TableBody>
@@ -100,15 +135,28 @@ const UsersSection = () => {
 												<TableCell component="th" scope="row">
 													{row.name}
 												</TableCell>
-												<TableCell align="right">{row.email}</TableCell>
-												<TableCell align="right">{row.role}</TableCell>
-												<TableCell align="right">{row.createdAt}</TableCell>
-												<TableCell align="right">{row.updatedAt}</TableCell>
+												<TableCell>{row.email}</TableCell>
+												<TableCell>{row.role}</TableCell>
+												<TableCell>{row.createdAt}</TableCell>
+												<TableCell>{row.updatedAt}</TableCell>
+												<TableCell align="center">
+													<IconButton color="error" onClick={() => setOpenDelete(row.id)}>
+														<Delete />
+													</IconButton>
+												</TableCell>
 											</TableRow>
 										))}
 									</TableBody>
 								</Table>
 							</TableContainer>
+							{!!openDelete && (
+								<DialogModal
+									children={<FormDelete onSubmitForm={deleteUserhandler} id={openDelete} />}
+									onClose={() => setOpenDelete(null)}
+									open={!!openDelete}
+									title="Delete User"
+								/>
+							)}
 						</Box>
 					) : (
 						<Typography variant="body1" style={{ color: '#000' }}>

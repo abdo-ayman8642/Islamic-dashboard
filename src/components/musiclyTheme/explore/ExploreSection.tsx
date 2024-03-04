@@ -9,9 +9,10 @@ interface FavouriteAudios {
 	audios: Audio[];
 	onRemove: (data: Audio) => void;
 	onAdd: () => void;
+	onCreate: () => void;
 }
 
-const ExploreSection = ({ audios, onRemove, onAdd }: FavouriteAudios) => {
+const ExploreSection = ({ audios, onRemove, onAdd, onCreate }: FavouriteAudios) => {
 	return (
 		<section className="explore__section custom__space pb-60 pr-24 pl-24 pt-0">
 			<div
@@ -25,7 +26,7 @@ const ExploreSection = ({ audios, onRemove, onAdd }: FavouriteAudios) => {
 					alignItems={'center'}
 					useFlexGap
 					sx={{ m: '20px', flexDirection: { xs: 'column', lg: 'row' } }}>
-					<Grid container justifyContent={'flex-end'} sx={{ display: { lg: 'flex' } }}>
+					<Grid container justifyContent={'flex-end'} sx={{ display: { lg: 'flex' }, gap: 3 }}>
 						<MuiOutlineButton
 							variant="outlined"
 							color="inherit"
@@ -33,7 +34,16 @@ const ExploreSection = ({ audios, onRemove, onAdd }: FavouriteAudios) => {
 							sx={{ px: 4, py: 2 }}
 							startIcon={<AddIcon sx={{ fill: '#232323' }} />}
 							onClick={onAdd}>
-							Add New
+							Add Existing Audio
+						</MuiOutlineButton>
+						<MuiOutlineButton
+							variant="outlined"
+							color="inherit"
+							size="small"
+							sx={{ px: 4, py: 2 }}
+							startIcon={<AddIcon sx={{ fill: '#232323' }} />}
+							onClick={onCreate}>
+							Add New Audio
 						</MuiOutlineButton>
 					</Grid>
 				</Stack>

@@ -1,6 +1,7 @@
 import {
 	CHANGE_PASSWORD,
 	DELETE_PODCAST,
+	DELETE_USER,
 	EDIT_PODCAST,
 	EDIT_PODCAST_IMAGE,
 	EDIT_USER,
@@ -38,6 +39,11 @@ export async function getUsers({ queryKey }: any) {
 
 export async function editUser(data: any) {
 	const response = await axiosInstance.post(EDIT_USER, data);
+	return response.data;
+}
+
+export async function deleteUser(data: any) {
+	const response = await axiosInstance.post(DELETE_USER, data);
 	return response.data;
 }
 

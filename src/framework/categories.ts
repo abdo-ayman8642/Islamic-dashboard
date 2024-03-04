@@ -1,12 +1,14 @@
 import axiosInstance from 'helpers/axiosInstance';
 import {
+	ADD_ALBUM_CATEGORY,
 	CREATE_CATEGORY,
 	DELETE_CATEGORY,
 	EDIT_CATEGORY,
 	EDIT_CATEGORY_IMAGE,
 	GET_ALL_CATEGORIES,
 	GET_CATEGORY_ALBUMS_BY_ID,
-	GET_CATEGORY_BY_ID
+	GET_CATEGORY_BY_ID,
+	REMOVE_ALBUM_CATEGORY
 } from '../constants/api';
 
 export async function getCategories({ queryKey }: any) {
@@ -34,6 +36,16 @@ export async function addCategory(data: FormData) {
 			Accept: '*/*'
 		}
 	});
+
+	return response.data;
+}
+export async function addAlbumCategory(data: any) {
+	const response = await axiosInstance.patch(ADD_ALBUM_CATEGORY, data);
+
+	return response.data;
+}
+export async function removeAlbumCategory(data: any) {
+	const response = await axiosInstance.patch(REMOVE_ALBUM_CATEGORY, data);
 
 	return response.data;
 }

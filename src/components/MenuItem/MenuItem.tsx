@@ -22,7 +22,7 @@ interface Props {
 
 const MenuItem: React.FC<Props> = ({ name, icon, color, slug, action, setOpenDrawer, open }) => {
 	const { currentRoute, push } = useApp();
-	const isSelected = currentRoute === `/${slug!}`;
+	const isSelected = currentRoute.startsWith(`/${slug!}`);
 
 	const renderIcon = (icon: string): React.ReactNode => {
 		if (icon === 'DashboardIcon') return <DashboardIcon sx={{ fill: color === 'white' ? '#FFFFFF' : '#232323' }} />;

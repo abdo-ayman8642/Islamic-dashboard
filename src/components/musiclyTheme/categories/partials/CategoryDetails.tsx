@@ -1,31 +1,82 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { useQueryClient } from 'react-query';
-import { getCategories } from 'framework/categories';
-import { CircularProgress, Grid, Stack } from '@mui/material';
-import MuiOutlineButton from 'components/UI/MuiOutlineButton';
+import { useMutation, useQueryClient } from 'react-query';
+import { addAlbumCategory, getCategories, removeAlbumCategory } from 'framework/categories';
+import { CircularProgress } from '@mui/material';
 //import SmallLoader from "@/components/shared/SmallLoader";
-import AddIcon from '@mui/icons-material/Add';
 
-import { Category } from 'models/api';
+import { Album, Category } from 'models/api';
 import { useParams } from 'react-router-dom';
 import ExploreSection from './explore/ExploreSection';
 import DialogModal from 'components/UI/DialogModal';
 import FormRemove from './FormRemove';
+import toast from 'react-hot-toast';
+import { getErrorTranslation } from 'helpers/utils';
+import FormCreate from './FormCreate';
+import FormAdd from './FormAdd';
+import { addAlbum, getAlbums } from 'framework/album';
 
 const CategoryDetails = () => {
 	const queryClient = useQueryClient();
 	const [loading, setLoading] = useState(false);
 	const [category, setCategory] = useState<Category | null>(null);
-	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [openForm, setOpenForm] = useState<boolean>(false);
-	const [openEditForm, setOpenEditForm] = useState<boolean>(false);
-	const [openEditThumbnail, setOpenEditThumbnail] = useState<boolean>(false);
-	const [openDeleteForm, setOpenDeleteForm] = useState<boolean>(false);
+	const [openCreateForm, setOpenCreateForm] = useState<boolean>(false);
+	const [albums, setAlbums] = useState<Album[]>([]);
+	const [error, setError] = useState(false);
+
+	const [openDeleteForm, setOpenDeleteForm] = useState<string | null>(null);
 	const urlParams = useParams();
 
 	let slug: string = urlParams[`Categoriesslug`] as string;
+
+	const mutationRemoveAlbum = useMutation({
+		mutationFn: (createInput: any) => {
+			return removeAlbumCategory(createInput);
+		},
+		onSuccess: () => {
+			fetchCategory();
+		}
+	});
+
+	const mutationAddAlbum = useMutation({
+		mutationFn: (createInput: any) => {
+			return addAlbumCategory(createInput);
+		},
+		onSuccess: () => {
+			fetchCategory();
+		}
+	});
+
+	const mutationCreateAlbum = useMutation({
+		mutationFn: (createInput: FormData) => {
+			return addAlbum(createInput);
+		},
+		onSuccess: () => {
+			fetchCategory();
+		}
+	});
+
+	const fetchAlbums = useCallback(async () => {
+		setLoading(true);
+
+		try {
+			const response = await queryClient.fetchQuery(['albums', { query: `` }], getAlbums);
+			setAlbums(response.data);
+			setLoading(false);
+		} catch (err: Error | any) {
+			// setAlert({
+			// 	open: true,
+			// 	message: err?.response?.data?.Message || err.message || 'Something went wrong',
+			// 	type: 'error'
+			// });
+			setLoading(false);
+			setError(true);
+		}
+
+		// eslint-disable-next-line
+	}, []);
 
 	const fetchCategory = useCallback(async () => {
 		setLoading(true);
@@ -40,36 +91,91 @@ const CategoryDetails = () => {
 		}
 
 		// eslint-disable-next-line
-	}, [searchTerm]);
+	}, []);
 
 	useEffect(() => {
 		fetchCategory();
+		fetchAlbums();
 		// eslint-disable-next-line
-	}, [searchTerm]);
-
-	const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchTerm(e.target.value);
-	};
-
-	const onSubmit = (data: any) => {
-		setOpenForm(false);
-	};
+	}, []);
 
 	const deleteAlbumHandler = async (id: string) => {
-		setOpenDeleteForm(false);
+		const data = { categoryId: id, albumId: openDeleteForm };
+		setOpenDeleteForm(null);
 		setLoading(true);
 		try {
-			//const res = await mutationDeleteAlbum.mutateAsync(id);
-			//if (res.Error) throw new Error(res.Message || 'Something went wrong');
+			const res = await mutationRemoveAlbum.mutateAsync(data);
+			if (res.Error) throw new Error(res.Message || 'Something went wrong');
 			setLoading(false);
-			//toast.success('Successfully Deleted Album');
+			toast.success('Successfully Removed Album');
 		} catch (error: any) {
 			setLoading(false);
 			const code: string = error.response.data.data;
-			//toast.error(getErrorTranslation(code));
+			toast.error(getErrorTranslation(code));
 		}
 	};
 
+	const addAlbumHandler = async (dataForm: any) => {
+		const data = { categoryId: category?._id, albumId: dataForm?.album };
+		setOpenForm(false);
+		setLoading(true);
+		try {
+			const res = await mutationAddAlbum.mutateAsync(data);
+			if (res.Error) throw new Error(res.Message || 'Something went wrong');
+			setLoading(false);
+			toast.success('Successfully Added Album');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
+		}
+	};
+
+	const createAlbumHandler = async (data: any) => {
+		const formData = new FormData();
+		setOpenCreateForm(false);
+		setLoading(true);
+
+		formData.append(
+			'data',
+			JSON.stringify({
+				title: [
+					{
+						lang: 'en',
+						value: data.titleEn
+					},
+					{
+						lang: 'ar',
+						value: data.titleAr
+					}
+				],
+				description: [
+					{
+						lang: 'en',
+						value: data.descriptionEn
+					},
+					{
+						lang: 'ar',
+						value: data.descriptionAr
+					}
+				],
+				category: category?._id,
+				slug: data.slug
+			})
+		);
+
+		data.thumbnail.length > 0 && formData.append('thumbnail', data.thumbnail[0]);
+		try {
+			const res = await mutationCreateAlbum.mutateAsync(formData);
+			if (res.Error) throw new Error(res.Message || 'Something went wrong');
+			setLoading(false);
+			toast.success('Successfully Created Album And Added To Category');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
+		}
+	};
 	// const handleOpenDeleteAlbum = (data: any) => {
 	// 	setCurrCategory(data);
 	// 	setOpenDeleteForm(true);
@@ -111,7 +217,7 @@ const CategoryDetails = () => {
 	}
 	return (
 		<section className="trending__section pr-24 pl-24 pb-100">
-			<Stack
+			{/* <Stack
 				component="main"
 				direction={'row'}
 				justifyContent={'center'}
@@ -129,7 +235,7 @@ const CategoryDetails = () => {
 						Add New
 					</MuiOutlineButton>
 				</Grid>
-			</Stack>
+			</Stack> */}
 			{/* {openForm && (
 				<DialogModal
 					children={<Form onSubmitForm={onSubmit} />}
@@ -210,13 +316,46 @@ const CategoryDetails = () => {
             </div> */}
 						</div>
 					</div>
-					<ExploreSection albums={category.albums} onRemove={() => setOpenDeleteForm(true)} />
+					<ExploreSection
+						albums={category.albums}
+						onRemove={(album) => setOpenDeleteForm(album._id)}
+						onAdd={() => setOpenForm(true)}
+						onCreate={() => setOpenCreateForm(true)}
+					/>
+					{openCreateForm && (
+						<DialogModal
+							fullScreen
+							children={<FormCreate onSubmitForm={createAlbumHandler} />}
+							onClose={() => setOpenCreateForm(false)}
+							open={openCreateForm}
+							title="Add New Album To category"
+						/>
+					)}
 					{openDeleteForm && (
 						<DialogModal
 							children={<FormRemove onSubmitForm={deleteAlbumHandler} id={category._id} />}
-							onClose={() => setOpenDeleteForm(false)}
-							open={openDeleteForm}
+							onClose={() => setOpenDeleteForm(null)}
+							open={!!openDeleteForm}
 							title="Remove Album From Category"
+						/>
+					)}
+					{openForm && (
+						<DialogModal
+							fullScreen
+							children={
+								<FormAdd
+									onSubmitForm={addAlbumHandler}
+									albums={albums.map((audio) => {
+										return {
+											label: audio.title[0].value,
+											value: audio._id
+										};
+									})}
+								/>
+							}
+							onClose={() => setOpenForm(false)}
+							open={openForm}
+							title="Add Album To Category"
 						/>
 					)}
 				</div>
