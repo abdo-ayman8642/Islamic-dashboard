@@ -1,4 +1,4 @@
-import { Alert, Grid, Link, Stack } from '@mui/material';
+import { Alert, Box, Grid, Link, Stack } from '@mui/material';
 import ActionLoader from 'components/UI/ActionLoader';
 import React from 'react';
 import { useQuery } from 'react-query';
@@ -41,7 +41,16 @@ const SideMenu: React.FC<Props> = () => {
 			onMouseLeave={() => setOpen(false)}>
 			<Stack justifyContent={'center'} spacing={2}>
 				<Grid container justifyContent={'center'} minHeight={200}>
-					<Link href="/analytics" />
+					<Link href="/" />
+					<Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
+						<Box
+							component={'img'}
+							width={open ? '200px' : '50px'}
+							height={open ? '200px' : '50px'}
+							style={{ aspectRatio: '1/1' }}
+							src={'/img/logo/logo-cropped.png'}
+						/>
+					</Box>
 				</Grid>
 				{features &&
 					features.length > 0 &&

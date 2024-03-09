@@ -3,6 +3,8 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Button, TextField, InputLabel, Container, Grid, Box } from '@mui/material';
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
 
 const schema = yup.object().shape({
 	titleAr: yup.string().required('Title (Arabic) is required'),
@@ -30,7 +32,9 @@ interface Props {
 
 const Form: React.FC<Props> = ({ onSubmitForm }) => {
 	const [selectedImage, setSelectedImage] = useState<any>(null);
+	const [selectedAudio, setSelectedAudio] = useState<any>(null);
 	const [imageUrl, setImageUrl] = useState<any>(null);
+	const [audioUrl, setAudioUrl] = useState<any>(null);
 	const {
 		register,
 		handleSubmit,
@@ -47,10 +51,16 @@ const Form: React.FC<Props> = ({ onSubmitForm }) => {
 		if (selectedImage) {
 			setImageUrl(URL.createObjectURL(selectedImage));
 		}
-	}, [selectedImage]);
+		if (selectedAudio) {
+			setAudioUrl(URL.createObjectURL(selectedAudio));
+		}
+	}, [selectedImage, selectedAudio]);
 
 	const handleChangeImage = (e: any) => {
 		setSelectedImage(e?.target?.files[0]);
+	};
+	const handleChangeAudio = (e: any) => {
+		setSelectedAudio(e?.target?.files[0]);
 	};
 
 	return (
@@ -119,18 +129,29 @@ const Form: React.FC<Props> = ({ onSubmitForm }) => {
 					<Grid item xs={12}>
 						<InputLabel htmlFor="thumbnail">Thumbnail</InputLabel>
 						<TextField type="file" id="thumbnail" fullWidth {...register('thumbnail')} onChange={handleChangeImage} />
+						{errors.thumbnail && <span>{errors?.thumbnail?.message}</span>}
 					</Grid>
 
 					<Grid item xs={12}>
 						<InputLabel htmlFor="audio">Audio</InputLabel>
-						<TextField type="file" id="audio" fullWidth {...register('audio')} />
+						<TextField type="file" id="audio" fullWidth {...register('audio')} onChange={handleChangeAudio} />
 					</Grid>
 
 					<Grid item xs={12}>
-						{selectedImage && selectedImage && (
+						{selectedImage && imageUrl && (
 							<Box mt={2} textAlign="center">
 								<div>Image Preview:</div>
 								<img src={imageUrl} alt={selectedImage.name} height="100px" />
+							</Box>
+						)}
+					</Grid>
+
+					<Grid item xs={12}>
+						{selectedAudio && audioUrl && (
+							<Box mt={2} textAlign="center">
+								<div>Audio Preview:</div>
+
+								<AudioPlayer src={audioUrl} onPlay={(e) => console.log('onPlay')} />
 							</Box>
 						)}
 					</Grid>

@@ -68,7 +68,7 @@ const Dashboard: React.FC = () => {
 						<Header />
 						<Suspense fallback={<ActionLoader position="fixed" />}>
 							<Routes>
-								<Route path="/*" element={<Navigate to={'/analytics'} />} />
+								<Route path="/*" element={<Navigate to={'/'} />} />
 								<Route path=":slug/*" element={<Listing />} />
 							</Routes>
 						</Suspense>
