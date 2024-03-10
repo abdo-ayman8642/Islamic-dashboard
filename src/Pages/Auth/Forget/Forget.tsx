@@ -56,7 +56,6 @@ const Forget: React.FC = () => {
 				toast.success('Email is Sent');
 				setLoading(false);
 			} catch (err: any) {
-				console.log(err.response.data.data);
 				helpers.setStatus({ success: false });
 				helpers.setErrors({ submit: getErrorTranslation(err.response.data.data) });
 				helpers.setSubmitting(false);

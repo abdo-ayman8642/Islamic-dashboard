@@ -1,4 +1,5 @@
 import {
+	ADD_ADMIN,
 	CHANGE_PASSWORD,
 	DELETE_PODCAST,
 	DELETE_USER,
@@ -44,6 +45,11 @@ export async function editUser(data: any) {
 
 export async function deleteUser(data: any) {
 	const response = await axiosInstance.post(DELETE_USER, data);
+	return response.data;
+}
+
+export async function addAdmin(data: any) {
+	const response = await axiosInstance.post(ADD_ADMIN, data);
 	return response.data;
 }
 

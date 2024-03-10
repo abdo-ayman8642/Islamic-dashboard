@@ -165,7 +165,6 @@ const AlbumDetails = () => {
 	};
 
 	const addAudioAlbumHandler = async (data: any) => {
-		console.log(data);
 		setOpenForm(false);
 		setLoading(true);
 		try {
@@ -184,7 +183,7 @@ const AlbumDetails = () => {
 		setOpenDeleteForm(true);
 		setCurAudio(data);
 	};
-	console.log(currAudio);
+
 	// const handleOpenDeleteAlbum = (data: any) => {
 	// 	setCurrCategory(data);
 	// 	setOpenDeleteForm(true);

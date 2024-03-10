@@ -5,7 +5,9 @@ import { useMutation, useQueryClient } from 'react-query';
 import {
 	Box,
 	CircularProgress,
+	Grid,
 	IconButton,
+	Stack,
 	Table,
 	TableBody,
 	TableCell,
@@ -17,12 +19,15 @@ import {
 import Paper from '@mui/material/Paper';
 import useAuthStore from 'store/auth';
 
-import { deleteUser, getUsers } from 'framework/user';
+import { addAdmin, deleteUser, getUsers } from 'framework/user';
 import { formatDate, getErrorTranslation } from 'helpers/utils';
 import { Delete } from '@mui/icons-material';
 import DialogModal from 'components/UI/DialogModal';
 import FormDelete from './partials/FormDelete';
 import toast from 'react-hot-toast';
+import MuiOutlineButton from 'components/UI/MuiOutlineButton';
+import AddIcon from '@mui/icons-material/Add';
+import FormAdd from './partials/FormAdd';
 
 const UsersSection = () => {
 	const queryClient = useQueryClient();
@@ -32,12 +37,22 @@ const UsersSection = () => {
 
 	const [error, setError] = useState<boolean>(false);
 	const [openDelete, setOpenDelete] = useState<string | null>(null);
+	const [openForm, setOpenForm] = useState<boolean>(false);
 
 	const { session, setSession } = useAuthStore();
 
 	const mutationDeleteUser = useMutation({
 		mutationFn: (data: any) => {
 			return deleteUser(data);
+		},
+		onSuccess: () => {
+			fetchUsers();
+		}
+	});
+
+	const mutationAddAdmin = useMutation({
+		mutationFn: (createInput: any) => {
+			return addAdmin(createInput);
 		},
 		onSuccess: () => {
 			fetchUsers();
@@ -65,10 +80,31 @@ const UsersSection = () => {
 		// eslint-disable-next-line
 	}, []);
 
+	const addAdminHandler = async (data: any) => {
+		setLoading(true);
+
+		const dataInput = { name: data?.name, email: data?.email, password: data?.password };
+
+		try {
+			const res = await mutationAddAdmin.mutateAsync(dataInput);
+			if (res.Error) throw new Error(res.Message || 'Something went wrong');
+			setLoading(false);
+			toast.success('Successfully Added Album');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
+		}
+	};
+	const onSubmit = async (data: any) => {
+		await addAdminHandler(data);
+		setOpenForm(false);
+	};
+
 	const deleteUserhandler = async (data: any) => {
 		const id = openDelete;
 		setOpenDelete(null);
-		console.log(id);
+
 		setLoading(true);
 		try {
 			const res = await mutationDeleteUser.mutateAsync({ id });
@@ -106,7 +142,7 @@ const UsersSection = () => {
 			formatDate(user?.updatedAt)
 		)
 	);
-	console.log(users);
+
 	return (
 		<section className="trending__section hotsong__section pr-24 pl-24 pb-100">
 			{loading ? (
@@ -114,56 +150,87 @@ const UsersSection = () => {
 					<CircularProgress size={40} />
 				</div>
 			) : (
-				<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: 'fit-content' }}>
-					{users ? (
-						<Box>
-							<TableContainer component={Paper}>
-								<Table sx={{ minWidth: 650 }} aria-label="simple table">
-									<TableHead>
-										<TableRow>
-											<TableCell>Name</TableCell>
-											<TableCell>Email</TableCell>
-											<TableCell>Role</TableCell>
-											<TableCell>Created At</TableCell>
-											<TableCell>Updated At</TableCell>
-											<TableCell>Actions</TableCell>
-										</TableRow>
-									</TableHead>
-									<TableBody>
-										{rows.map((row) => (
-											<TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-												<TableCell component="th" scope="row">
-													{row.name}
-												</TableCell>
-												<TableCell>{row.email}</TableCell>
-												<TableCell>{row.role}</TableCell>
-												<TableCell>{row.createdAt}</TableCell>
-												<TableCell>{row.updatedAt}</TableCell>
-												<TableCell align="center">
-													<IconButton color="error" onClick={() => setOpenDelete(row.id)}>
-														<Delete />
-													</IconButton>
-												</TableCell>
-											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</TableContainer>
-							{!!openDelete && (
-								<DialogModal
-									children={<FormDelete onSubmitForm={deleteUserhandler} id={openDelete} />}
-									onClose={() => setOpenDelete(null)}
-									open={!!openDelete}
-									title="Delete User"
-								/>
-							)}
-						</Box>
-					) : (
-						<Typography variant="body1" style={{ color: '#000' }}>
-							No Users found.
-						</Typography>
+				<>
+					<Stack
+						component="main"
+						justifyContent={'center'}
+						alignItems={'center'}
+						useFlexGap
+						sx={{ m: '20px', flexDirection: { xs: 'column', lg: 'row' } }}>
+						<div style={{ padding: ' 20px 0', fontSize: '25px', fontWeight: 500 }}>Users </div>
+
+						<Grid container justifyContent={'flex-end'} sx={{ display: { lg: 'flex' } }}>
+							<MuiOutlineButton
+								variant="outlined"
+								color="inherit"
+								size="small"
+								sx={{ px: 3, py: 1, fontSize: '15px' }}
+								startIcon={<AddIcon sx={{ fill: '#232323' }} />}
+								onClick={() => setOpenForm(true)}>
+								Add Admin
+							</MuiOutlineButton>
+						</Grid>
+					</Stack>
+					{openForm && (
+						<DialogModal
+							fullScreen
+							children={<FormAdd onSubmitForm={onSubmit} />}
+							onClose={() => setOpenForm(false)}
+							open={openForm}
+							title="Add Admin"
+						/>
 					)}
-				</Box>
+					<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: 'fit-content' }}>
+						{users ? (
+							<Box>
+								<TableContainer component={Paper}>
+									<Table sx={{ minWidth: 650 }} aria-label="simple table">
+										<TableHead>
+											<TableRow>
+												<TableCell>Name</TableCell>
+												<TableCell>Email</TableCell>
+												<TableCell>Role</TableCell>
+												<TableCell>Created At</TableCell>
+												<TableCell>Updated At</TableCell>
+												<TableCell>Actions</TableCell>
+											</TableRow>
+										</TableHead>
+										<TableBody>
+											{rows.map((row) => (
+												<TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+													<TableCell component="th" scope="row">
+														{row.name}
+													</TableCell>
+													<TableCell>{row.email}</TableCell>
+													<TableCell>{row.role}</TableCell>
+													<TableCell>{row.createdAt}</TableCell>
+													<TableCell>{row.updatedAt}</TableCell>
+													<TableCell align="center">
+														<IconButton color="error" onClick={() => setOpenDelete(row.id)}>
+															<Delete />
+														</IconButton>
+													</TableCell>
+												</TableRow>
+											))}
+										</TableBody>
+									</Table>
+								</TableContainer>
+								{!!openDelete && (
+									<DialogModal
+										children={<FormDelete onSubmitForm={deleteUserhandler} id={openDelete} />}
+										onClose={() => setOpenDelete(null)}
+										open={!!openDelete}
+										title="Delete User"
+									/>
+								)}
+							</Box>
+						) : (
+							<Typography variant="body1" style={{ color: '#000' }}>
+								No Users found.
+							</Typography>
+						)}
+					</Box>
+				</>
 			)}
 		</section>
 	);

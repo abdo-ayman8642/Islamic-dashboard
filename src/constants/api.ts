@@ -39,6 +39,7 @@ export const DELETE_PODCAST = '/api/audios/delete';
 //user
 export const EDIT_USER = '/api/user/edit';
 export const DELETE_USER = '/api/user/delete';
+export const ADD_ADMIN = '/api/user/add';
 export const GET_USERS = '/api/user/users';
 export const CHANGE_PASSWORD = '/api/user/change-password';
 export const RESET_PASSWORD = '/api/user/reset-password';

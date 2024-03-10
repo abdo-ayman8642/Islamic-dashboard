@@ -25,7 +25,6 @@ const Reset: React.FC = () => {
 	const urlParams = useParams();
 
 	let token: string = urlParams[`token`] as string;
-	console.log(token);
 
 	const mutationReset = useMutation({
 		mutationFn: (createInput: any) => {
@@ -65,7 +64,6 @@ const Reset: React.FC = () => {
 				push('/analytics');
 				setLoading(false);
 			} catch (err: any) {
-				console.log(err.response.data.data);
 				helpers.setStatus({ success: false });
 				helpers.setErrors({ submit: getErrorTranslation(err.response.data.data) });
 				helpers.setSubmitting(false);
