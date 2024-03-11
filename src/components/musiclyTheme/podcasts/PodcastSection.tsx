@@ -120,7 +120,7 @@ const PodcastSection = () => {
 					}
 				],
 				isFree: data.free,
-				published: data.published,
+				published: data.published ? 'true' : 'false',
 				slug: data.slug
 			})
 		);
@@ -181,7 +181,7 @@ const PodcastSection = () => {
 					}
 				],
 				isFree: data.free,
-				published: data.published,
+				published: data.published ? 'true' : 'false',
 				slug: data.slug
 			});
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');

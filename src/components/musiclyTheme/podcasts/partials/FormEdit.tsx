@@ -14,7 +14,7 @@ const schema = yup.object().shape({
 	thumbnail: yup.mixed(),
 	audio: yup.mixed(),
 	free: yup.boolean().default(false),
-	published: yup.boolean().default(true)
+	published: yup.boolean().default(false)
 });
 
 type FormValues = {
