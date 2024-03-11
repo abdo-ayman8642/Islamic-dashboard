@@ -13,7 +13,8 @@ const schema = yup.object().shape({
 	slug: yup.string().required('Slug is required'),
 	thumbnail: yup.mixed(),
 	audio: yup.mixed(),
-	free: yup.boolean().default(false)
+	free: yup.boolean().default(false),
+	published: yup.boolean().default(true)
 });
 
 type FormValues = {
@@ -25,6 +26,7 @@ type FormValues = {
 	slug: string;
 	audio?: FileList;
 	free: boolean;
+	published: boolean;
 };
 
 interface Props {
@@ -45,7 +47,8 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, audio }) => {
 			descriptionEn: audio.description[0].value,
 			descriptionAr: audio.description[1].value,
 			slug: audio.slug,
-			free: !!audio.isFree
+			free: !!audio.isFree,
+			published: !!audio.published
 		}
 	});
 
@@ -120,6 +123,13 @@ const FormEdit: React.FC<Props> = ({ onSubmitForm, audio }) => {
 						<FormControlLabel
 							control={<Checkbox defaultChecked={!!audio?.isFree} {...register('free')} />}
 							label="Is Free ?"
+						/>
+					</Grid>
+
+					<Grid item xs={12}>
+						<FormControlLabel
+							control={<Checkbox defaultChecked={!!audio?.published} {...register('published')} />}
+							label="Published ?"
 						/>
 					</Grid>
 

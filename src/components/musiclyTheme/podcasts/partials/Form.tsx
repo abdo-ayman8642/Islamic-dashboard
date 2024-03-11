@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Button, TextField, InputLabel, Container, Grid, Box } from '@mui/material';
+import { Button, TextField, InputLabel, Container, Grid, Box, FormControlLabel, Checkbox } from '@mui/material';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 
@@ -13,7 +13,9 @@ const schema = yup.object().shape({
 	descriptionEn: yup.string().required('Description (English) is required'),
 	slug: yup.string().required('Slug is required'),
 	thumbnail: yup.mixed(),
-	audio: yup.mixed()
+	audio: yup.mixed(),
+	free: yup.boolean().default(false),
+	published: yup.boolean().default(true)
 });
 
 type FormValues = {
@@ -24,6 +26,8 @@ type FormValues = {
 	thumbnail?: FileList;
 	audio?: FileList;
 	slug: string;
+	free: boolean;
+	published: boolean;
 };
 
 interface Props {
@@ -154,6 +158,12 @@ const Form: React.FC<Props> = ({ onSubmitForm }) => {
 								<AudioPlayer src={audioUrl} onPlay={(e) => console.log('onPlay')} />
 							</Box>
 						)}
+					</Grid>
+					<Grid item xs={12}>
+						<FormControlLabel control={<Checkbox {...register('free')} />} label="Is Free ?" />
+					</Grid>
+					<Grid item xs={12}>
+						<FormControlLabel control={<Checkbox {...register('published')} />} label="Published ?" />
 					</Grid>
 					<Grid item xs={12}>
 						<Button type="submit" variant="contained" color="primary" sx={{ width: '100%' }}>

@@ -79,6 +79,7 @@ export interface Audio {
 	title: Information[];
 	description: Information[];
 	isFree: boolean;
+	published: boolean;
 	albums: Album[];
 	rating: number;
 	createdAt: string;

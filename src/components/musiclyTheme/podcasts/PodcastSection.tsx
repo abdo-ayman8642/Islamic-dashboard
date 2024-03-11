@@ -119,7 +119,8 @@ const PodcastSection = () => {
 						value: data.descriptionAr
 					}
 				],
-
+				isFree: data.free,
+				published: data.published,
 				slug: data.slug
 			})
 		);
@@ -180,6 +181,7 @@ const PodcastSection = () => {
 					}
 				],
 				isFree: data.free,
+				published: data.published,
 				slug: data.slug
 			});
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
