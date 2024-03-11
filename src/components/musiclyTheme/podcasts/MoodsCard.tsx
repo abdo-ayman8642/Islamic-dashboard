@@ -12,7 +12,7 @@ interface AudioCard {
 }
 const MoodsCard = ({ audio, onClick, onDelete, onImage }: AudioCard) => {
 	return (
-		<div className="trending__item text-center round16 play-button-container">
+		<div className="trending__item text-center round16 play-button-container" style={{ position: 'relative' }}>
 			<div className="thumb ralt overhid transition">
 				<img
 					src={audio.thumbnail || '/img/pocast/q.png'}
@@ -51,6 +51,19 @@ const MoodsCard = ({ audio, onClick, onDelete, onImage }: AudioCard) => {
 					</div>
 				</h5>
 			</div>
+			{!audio.published && (
+				<div
+					style={{
+						position: 'absolute',
+						width: '30px',
+						height: '30px',
+						backgroundColor: 'red',
+						top: -10,
+						right: -10,
+						borderRadius: '50%'
+					}}
+				/>
+			)}
 		</div>
 	);
 };
