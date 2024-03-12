@@ -1,25 +1,69 @@
 import { Box, Stack } from '@mui/material';
+import { LineChart, PieChart } from '@mui/x-charts';
+import ActionLoader from 'components/UI/ActionLoader';
+import { getStat } from 'framework/user';
+import { useCallback, useEffect, useState } from 'react';
+import { useQueryClient } from 'react-query';
 
 const Analytics: React.FC = () => {
-	// if (loading) return <ActionLoader position="fixed" />;
+	const queryClient = useQueryClient();
+	const [loading, setLoading] = useState<boolean>(true);
+	const [statistics, setStatistics] = useState<any>({});
+	const [error, setError] = useState<boolean>(false);
+	const fetchStat = useCallback(async () => {
+		try {
+			const response: any = await queryClient.fetchQuery(['analytics', { query: `` }], getStat);
+			const data = response.data;
+			setStatistics(data);
+			setLoading(false);
+		} catch (err: Error | any) {
+			// Handle errors here
+			setLoading(false);
+			setError(true);
+		}
+
+		// eslint-disable-next-line
+	}, []);
+
+	useEffect(() => {
+		fetchStat();
+		// eslint-disable-next-line
+	}, []);
+
+	if (loading) return <ActionLoader position="fixed" />;
+
+	const { stat, trans } = statistics;
+	console.log(stat);
+	const { subscribedCount, totalAdmins, totalClients, totalUsers, unsubscribedCount } = stat[0];
+	//const [allPaidTransactions, countDonations, countSubscription, totalDonations, totalSubscription] = trans;
 	return (
-		<Box>
+		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
 			<Stack component="main" direction={'row'} useFlexGap>
 				Analytics
 			</Stack>
-			{/* <PieChart
-				series={[
-					{
-						data: [
-							{ id: 0, value: 10, label: 'series A' },
-							{ id: 1, value: 15, label: 'series B' },
-							{ id: 2, value: 20, label: 'series C' }
-						]
-					}
-				]}
-				width={400}
-				height={200}
-			/>
+			<Stack>
+				<Box>Total Users: {totalUsers}</Box>
+				<PieChart
+					colors={['red', 'blue']}
+					series={[
+						{
+							data: [
+								{ id: 0, value: unsubscribedCount, label: 'Unsubscribed' },
+								{ id: 1, value: subscribedCount, label: 'Subscribed' }
+							]
+						}
+					]}
+					width={500}
+					height={200}
+					// slotProps={{
+					// 	legend: {
+					// 		direction: 'row',
+					// 		position: { vertical: 'bottom', horizontal: 'middle' },
+					// 		padding: 0
+					// 	}
+					// }}
+				/>
+			</Stack>
 
 			<LineChart
 				xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
@@ -30,7 +74,7 @@ const Analytics: React.FC = () => {
 				]}
 				width={500}
 				height={300}
-			/> */}
+			/>
 		</Box>
 	);
 };

@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
 
 			setLoading(false);
 
-			push(search.length === 0 ? pathname : pathname + search);
+			push('/analytics');
 		} catch (err: Error | any) {
 			redirectToLogin();
 		}

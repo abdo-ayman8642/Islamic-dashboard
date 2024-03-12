@@ -9,6 +9,7 @@ import {
 	GET_ALL_PODCASTS,
 	GET_CATEGORY_ALBUMS_BY_ID,
 	GET_CATEGORY_BY_ID,
+	GET_STAT,
 	GET_USERS,
 	RESET_PASSWORD
 } from '../constants/api';
@@ -35,6 +36,12 @@ export async function getPopularPodcasts({ queryKey }: any) {
 export async function getUsers({ queryKey }: any) {
 	const { query } = queryKey[1];
 	const response = await axiosInstance.get(GET_USERS + query);
+	return response.data;
+}
+
+export async function getStat({ queryKey }: any) {
+	const { query } = queryKey[1];
+	const response = await axiosInstance.get(GET_STAT + query);
 	return response.data;
 }
 
