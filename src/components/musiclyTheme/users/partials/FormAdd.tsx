@@ -70,7 +70,7 @@ const FormAdd: React.FC<Props> = ({ onSubmitForm }) => {
 					<Grid item xs={12}>
 						<TextField
 							id="password"
-							label="Current Password"
+							label="Password"
 							type="password"
 							variant="outlined"
 							multiline
