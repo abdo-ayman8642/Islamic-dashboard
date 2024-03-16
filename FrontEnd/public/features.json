@@ -1,0 +1,62 @@
+[
+	{
+		"id": 1,
+		"name": "Analytics",
+		"icon": "DashboardIcon",
+		"slug": "analytics",
+		"singleName": "Analytics",
+		"precedence": "1",
+		"parentID": "-1",
+		"children": []
+	},
+	{
+		"id": 2,
+		"name": "Categories",
+		"icon": "CalendarTodayIcon",
+		"slug": "categories",
+		"singleName": "Categories",
+		"precedence": "2",
+		"parentID": "-1",
+		"children": []
+	},
+	{
+		"id": 3,
+		"name": "Albums",
+		"icon": "InsertChartIcon",
+		"slug": "albums",
+		"singleName": "Albums",
+		"precedence": "3",
+		"parentID": "-1",
+		"children": []
+	},
+	{
+		"id": 4,
+		"name": "Podcasts",
+		"icon": "LineAxisIcon",
+		"slug": "podcasts",
+		"singleName": "Podcasts",
+		"precedence": "4",
+		"parentID": "-1",
+		"children": []
+	},
+	{
+		"id": 5,
+		"name": "Profile",
+		"icon": "ProfileIcon",
+		"slug": "profile",
+		"singleName": "Profile",
+		"precedence": "5",
+		"parentID": "-1",
+		"children": []
+	},
+	{
+		"id": 6,
+		"name": "Users",
+		"icon": "GroupIcon",
+		"slug": "users",
+		"singleName": "Users",
+		"precedence": "6",
+		"parentID": "-1",
+		"children": []
+	}
+]
