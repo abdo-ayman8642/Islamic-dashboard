@@ -8,7 +8,7 @@ import MuiOutlineButton from 'components/UI/MuiOutlineButton';
 import AddIcon from '@mui/icons-material/Add';
 import DialogModal from 'components/UI/DialogModal';
 import Form from './partials/Form';
-import { addAudio, deleteAudio, editAudio, editImage, getPodcasts } from 'framework/podcast';
+import { addAudio, deleteAudio, editAudio, editImage, getPodcasts, playAudios } from 'framework/podcast';
 import FormEdit from './partials/FormEdit';
 import FormDelete from './partials/FormDelete';
 import ThumbnailEdit from './partials/ThumbnailEdit';
@@ -16,12 +16,17 @@ import SearchField from 'components/Header/partials/SearchField';
 import { Audio } from 'models/api';
 import toast from 'react-hot-toast';
 import { getErrorTranslation } from 'helpers/utils';
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
+import { Close } from '@mui/icons-material';
 
 const PodcastSection = () => {
 	const queryClient = useQueryClient();
 	const [loading, setLoading] = useState(false);
 	const [audios, setAudios] = useState<Audio[]>([]);
 	const [searchTerm, setSearchTerm] = useState<string>('');
+	const [playAudio, setPlayAudio] = useState<string>('');
+	const [openAudio, setOpenAudio] = useState<boolean>(false);
 	const [openForm, setOpenForm] = useState<boolean>(false);
 	const [CurrAudio, setCurrAudio] = useState<Audio>({} as Audio);
 	const [openEditForm, setOpenEditForm] = useState<boolean>(false);
@@ -236,6 +241,30 @@ const PodcastSection = () => {
 		setCurrAudio(data);
 		setOpenEditThumbnail(true);
 	};
+
+	const handlePlayAudio = async (data: any) => {
+		try {
+			setLoading(true);
+			const response = await queryClient.fetchQuery(['album', { query: `/${data?._id}` }], playAudios);
+			setOpenAudio(true);
+			setPlayAudio(response?.data);
+			setLoading(false);
+			//saveToRecent(audio._id);
+		} catch (err: Error | any) {
+			setLoading(false);
+			//toast.error(t("subscribe_to_access"));
+			setOpenAudio(false);
+			toast.error('Failed');
+			// toast.custom((t) => <CustomNotification {...t} />, {});
+			// setAlert({
+			// 	open: true,
+			// 	message: err?.response?.data?.Message || err.message || 'Something went wrong',
+			// 	type: 'error'
+			// });
+		}
+
+		// eslint-disable-next-line
+	};
 	const handleOnCloseEditImage = () => {
 		setCurrAudio({} as Audio);
 		setOpenEditThumbnail(false);
@@ -337,6 +366,7 @@ const PodcastSection = () => {
 											key={audio._id}
 											audio={audio}
 											onImage={handleOpenImage}
+											onPlay={handlePlayAudio}
 											onClick={hanldeClickAudio}
 											onDelete={handleOpenDeleteAlbum}
 										/>
@@ -345,6 +375,27 @@ const PodcastSection = () => {
 							</div>
 						</div>
 					</div>
+				</div>
+			)}
+			{openAudio && (
+				<div
+					style={{
+						position: 'absolute',
+						bottom: 0,
+						width: '95%',
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'end'
+					}}>
+					<Close
+						style={{ margin: 10, cursor: 'pointer' }}
+						onClick={() => {
+							setOpenAudio(false);
+							setPlayAudio('');
+						}}
+					/>
+
+					<AudioPlayer src={playAudio} onPlay={(e) => console.log('onPlay')} />
 				</div>
 			)}
 		</section>

@@ -5,13 +5,19 @@ import {
 	EDIT_PODCAST_IMAGE,
 	GET_ALL_PODCASTS,
 	GET_CATEGORY_ALBUMS_BY_ID,
-	GET_CATEGORY_BY_ID
+	GET_CATEGORY_BY_ID,
+	PLAY_AUDIO
 } from '../constants/api';
 import axiosInstance from 'helpers/axiosInstance';
 
 export async function getPodcasts({ queryKey }: any) {
 	const { query } = queryKey[1];
 	const response = await axiosInstance.get(GET_ALL_PODCASTS + query);
+	return response.data;
+}
+export async function playAudios({ queryKey }: any) {
+	const { query } = queryKey[1];
+	const response = await axiosInstance.get(PLAY_AUDIO + query);
 	return response.data;
 }
 

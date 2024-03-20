@@ -2,6 +2,7 @@
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ImageIcon from '@mui/icons-material/Image';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { Audio } from 'models/api';
 
 interface AudioCard {
@@ -9,8 +10,9 @@ interface AudioCard {
 	onClick: (data: Audio) => void;
 	onDelete: (data: Audio) => void;
 	onImage: (data: Audio) => void;
+	onPlay: (data: Audio) => void;
 }
-const MoodsCard = ({ audio, onClick, onDelete, onImage }: AudioCard) => {
+const MoodsCard = ({ audio, onClick, onDelete, onImage, onPlay }: AudioCard) => {
 	return (
 		<div className="trending__item text-center round16 play-button-container" style={{ position: 'relative' }}>
 			<div className="thumb ralt overhid transition" style={{ position: 'relative' }}>
@@ -41,6 +43,12 @@ const MoodsCard = ({ audio, onClick, onDelete, onImage }: AudioCard) => {
 						onClick={() => onDelete(audio)}
 						style={{ cursor: 'pointer' }}>
 						<DeleteIcon />
+					</div>
+					<div
+						className="d-flex fs-16 fw-500 white align-items-center gap-3"
+						onClick={() => onPlay(audio)}
+						style={{ cursor: 'pointer' }}>
+						<PlayArrowIcon />
 					</div>
 				</div>
 				{!audio.isFree && (

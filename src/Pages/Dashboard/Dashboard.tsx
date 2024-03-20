@@ -61,6 +61,7 @@ const Dashboard: React.FC = () => {
 				bgcolor="background.default"
 				width={'100dvw'}
 				height={'100dvh'}
+				position={'relative'}
 				useFlexGap>
 				<Suspense fallback={<ActionLoader position="fixed" />}>
 					<SideMenu />

@@ -35,6 +35,7 @@ export const CREATE_PODCAST = '/api/audios/create';
 export const EDIT_PODCAST = '/api/audios/update';
 export const EDIT_PODCAST_IMAGE = '/api/audios/updateThumbnail';
 export const DELETE_PODCAST = '/api/audios/delete';
+export const PLAY_AUDIO = '/api/audios/play';
 
 //user
 export const EDIT_USER = '/api/user/edit';
