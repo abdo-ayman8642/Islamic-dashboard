@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://islamic-backend-3.onrender.com';
+export const BASE_URL = 'http://api.rouhalkalam.com';
 
 // Authentication
 export const LOGIN = '/api/user/loginAdmin';
