@@ -11,7 +11,8 @@ import {
 	GET_CATEGORY_BY_ID,
 	GET_STAT,
 	GET_USERS,
-	RESET_PASSWORD
+	RESET_PASSWORD,
+	TOGGLE_USER_SUBSCRIPTION
 } from '../constants/api';
 import axiosInstance from 'helpers/axiosInstance';
 
@@ -52,6 +53,11 @@ export async function editUser(data: any) {
 
 export async function deleteUser(data: any) {
 	const response = await axiosInstance.post(DELETE_USER, data);
+	return response.data;
+}
+
+export async function toggleUserSubscription(data: any) {
+	const response = await axiosInstance.post(TOGGLE_USER_SUBSCRIPTION, data);
 	return response.data;
 }
 

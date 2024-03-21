@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
+import CloseIcon from '@mui/icons-material/Close';
 import {
 	Box,
 	CircularProgress,
@@ -14,12 +15,13 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
+	Tooltip,
 	Typography
 } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import useAuthStore from 'store/auth';
 
-import { addAdmin, deleteUser, getUsers } from 'framework/user';
+import { addAdmin, deleteUser, getUsers, toggleUserSubscription } from 'framework/user';
 import { formatDate, getErrorTranslation } from 'helpers/utils';
 import { Delete } from '@mui/icons-material';
 import DialogModal from 'components/UI/DialogModal';
@@ -28,6 +30,17 @@ import toast from 'react-hot-toast';
 import MuiOutlineButton from 'components/UI/MuiOutlineButton';
 import AddIcon from '@mui/icons-material/Add';
 import FormAdd from './partials/FormAdd';
+import CheckIcon from '@mui/icons-material/Check';
+import FormToggleSubscribe from './partials/FormToggleSubscripe';
+
+export enum ToggleSubscribtion {
+	ACCESS = 'access',
+	DENEY = 'deny'
+}
+interface SubscribtionProp {
+	id: string;
+	type: ToggleSubscribtion;
+}
 
 const UsersSection = () => {
 	const queryClient = useQueryClient();
@@ -37,6 +50,7 @@ const UsersSection = () => {
 
 	const [error, setError] = useState<boolean>(false);
 	const [openDelete, setOpenDelete] = useState<string | null>(null);
+	const [toggleSubscripe, setToggleSubscripe] = useState<SubscribtionProp | null>(null);
 	const [openForm, setOpenForm] = useState<boolean>(false);
 
 	const { session, setSession } = useAuthStore();
@@ -44,6 +58,15 @@ const UsersSection = () => {
 	const mutationDeleteUser = useMutation({
 		mutationFn: (data: any) => {
 			return deleteUser(data);
+		},
+		onSuccess: () => {
+			fetchUsers();
+		}
+	});
+
+	const mutationToggleSubscriptionUser = useMutation({
+		mutationFn: (data: any) => {
+			return toggleUserSubscription(data);
 		},
 		onSuccess: () => {
 			fetchUsers();
@@ -119,9 +142,34 @@ const UsersSection = () => {
 		}
 	};
 
+	const toggleUserSubscriptionhandler = async (data: any) => {
+		setToggleSubscripe(null);
+
+		setLoading(true);
+		try {
+			const res = await mutationToggleSubscriptionUser.mutateAsync(toggleSubscripe);
+			setLoading(false);
+
+			toast.success('Successfully Changed User Subscription');
+			if (res?.Error) throw new Error(res?.Message || 'Something went wrong');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
+		}
+	};
+
 	if (error) return <div>Error</div>;
-	function createData(id: string, name: string, email: string, role: string, createdAt: string, updatedAt: string) {
-		return { id, name, email, role, createdAt, updatedAt };
+	function createData(
+		id: string,
+		name: string,
+		email: string,
+		role: string,
+		subscribed: string,
+		createdAt: string,
+		updatedAt: string
+	) {
+		return { id, name, email, role, subscribed, createdAt, updatedAt };
 	}
 
 	// [
@@ -138,6 +186,7 @@ const UsersSection = () => {
 			user?.name,
 			user?.email,
 			user?.role === '62f86e900860a1d7140f99d2' ? 'Admin' : 'User',
+			user?.isSubscribed ? 'True' : 'False',
 			formatDate(user?.createdAt),
 			formatDate(user?.updatedAt)
 		)
@@ -190,6 +239,7 @@ const UsersSection = () => {
 												<TableCell>Name</TableCell>
 												<TableCell>Email</TableCell>
 												<TableCell>Role</TableCell>
+												<TableCell>Subscribed</TableCell>
 												<TableCell>Created At</TableCell>
 												<TableCell>Updated At</TableCell>
 												<TableCell>Actions</TableCell>
@@ -203,12 +253,47 @@ const UsersSection = () => {
 													</TableCell>
 													<TableCell>{row.email}</TableCell>
 													<TableCell>{row.role}</TableCell>
+													<TableCell>{row.subscribed}</TableCell>
 													<TableCell>{row.createdAt}</TableCell>
 													<TableCell>{row.updatedAt}</TableCell>
 													<TableCell align="center">
-														<IconButton color="error" onClick={() => setOpenDelete(row.id)}>
-															<Delete />
-														</IconButton>
+														{row.role === 'User' && (
+															<>
+																<Tooltip title="Delete">
+																	<IconButton color="error" onClick={() => setOpenDelete(row.id)}>
+																		<Delete />
+																	</IconButton>
+																</Tooltip>
+
+																{row.subscribed === 'True' ? (
+																	<Tooltip title="Deny">
+																		<IconButton
+																			color="error"
+																			onClick={() =>
+																				setToggleSubscripe({
+																					id: row.id,
+																					type: ToggleSubscribtion.DENEY
+																				})
+																			}>
+																			<CloseIcon />
+																		</IconButton>
+																	</Tooltip>
+																) : (
+																	<Tooltip title="Access">
+																		<IconButton
+																			color="success"
+																			onClick={() =>
+																				setToggleSubscripe({
+																					id: row.id,
+																					type: ToggleSubscribtion.ACCESS
+																				})
+																			}>
+																			<CheckIcon />
+																		</IconButton>
+																	</Tooltip>
+																)}
+															</>
+														)}
 													</TableCell>
 												</TableRow>
 											))}
@@ -221,6 +306,21 @@ const UsersSection = () => {
 										onClose={() => setOpenDelete(null)}
 										open={!!openDelete}
 										title="Delete User"
+									/>
+								)}
+
+								{!!toggleSubscripe && (
+									<DialogModal
+										children={
+											<FormToggleSubscribe
+												onSubmitForm={toggleUserSubscriptionhandler}
+												id={toggleSubscripe.id}
+												type={toggleSubscripe.type}
+											/>
+										}
+										onClose={() => setToggleSubscripe(null)}
+										open={!!toggleSubscripe}
+										title="Subscription Access"
 									/>
 								)}
 							</Box>
