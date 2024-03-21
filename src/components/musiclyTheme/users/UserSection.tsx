@@ -21,7 +21,7 @@ import {
 import Paper from '@mui/material/Paper';
 import useAuthStore from 'store/auth';
 
-import { addAdmin, deleteUser, getUsers, toggleUserSubscription } from 'framework/user';
+import { addAdmin, addNameHonors, deleteUser, getHonors, getUsers, toggleUserSubscription } from 'framework/user';
 import { formatDate, getErrorTranslation } from 'helpers/utils';
 import { Delete } from '@mui/icons-material';
 import DialogModal from 'components/UI/DialogModal';
@@ -32,6 +32,7 @@ import AddIcon from '@mui/icons-material/Add';
 import FormAdd from './partials/FormAdd';
 import CheckIcon from '@mui/icons-material/Check';
 import FormToggleSubscribe from './partials/FormToggleSubscripe';
+import FormAddHonors from './partials/FormAddHonors';
 
 export enum ToggleSubscribtion {
 	ACCESS = 'access',
@@ -47,11 +48,13 @@ const UsersSection = () => {
 	const [loading, setLoading] = useState(false);
 
 	const [users, setUsers] = useState<any[]>([]);
+	const [honors, setHonors] = useState<any[]>([]);
 
 	const [error, setError] = useState<boolean>(false);
 	const [openDelete, setOpenDelete] = useState<string | null>(null);
 	const [toggleSubscripe, setToggleSubscripe] = useState<SubscribtionProp | null>(null);
 	const [openForm, setOpenForm] = useState<boolean>(false);
+	const [openHonorForm, setOpenHonorForm] = useState<boolean>(false);
 
 	const { session, setSession } = useAuthStore();
 
@@ -82,6 +85,15 @@ const UsersSection = () => {
 		}
 	});
 
+	const mutationAddNameHonors = useMutation({
+		mutationFn: (createInput: any) => {
+			return addNameHonors(createInput);
+		},
+		onSuccess: () => {
+			fetchHonors();
+		}
+	});
+
 	const fetchUsers = useCallback(async () => {
 		setLoading(true);
 
@@ -103,6 +115,28 @@ const UsersSection = () => {
 		// eslint-disable-next-line
 	}, []);
 
+	const fetchHonors = useCallback(async () => {
+		setLoading(true);
+
+		try {
+			const response: any = await queryClient.fetchQuery(['honors', { query: `` }], getHonors);
+			setHonors(response.data._users);
+			setLoading(false);
+		} catch (err: Error | any) {
+			// Handle errors here
+			setLoading(false);
+			setError(true);
+		}
+
+		// eslint-disable-next-line
+	}, []);
+
+	useEffect(() => {
+		fetchUsers();
+		fetchHonors();
+		// eslint-disable-next-line
+	}, []);
+
 	const addAdminHandler = async (data: any) => {
 		setLoading(true);
 
@@ -119,9 +153,31 @@ const UsersSection = () => {
 			toast.error(getErrorTranslation(code));
 		}
 	};
+	const addNameHonorsHandler = async (data: any) => {
+		setLoading(true);
+
+		const dataInput = { name: data?.name };
+
+		try {
+			const res = await mutationAddNameHonors.mutateAsync(dataInput);
+			if (res.Error) throw new Error(res.Message || 'Something went wrong');
+			setLoading(false);
+			toast.success('Successfully Added Name To Honors');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
+		}
+	};
+
 	const onSubmit = async (data: any) => {
 		await addAdminHandler(data);
 		setOpenForm(false);
+	};
+
+	const onSubmitHonors = async (data: any) => {
+		await addNameHonorsHandler(data);
+		setOpenHonorForm(false);
 	};
 
 	const deleteUserhandler = async (data: any) => {
@@ -329,6 +385,42 @@ const UsersSection = () => {
 								No Users found.
 							</Typography>
 						)}
+					</Box>
+					<Stack
+						component="main"
+						justifyContent={'center'}
+						alignItems={'center'}
+						useFlexGap
+						sx={{ m: '20px', flexDirection: { xs: 'column', lg: 'row' } }}>
+						<div style={{ padding: ' 20px 0', fontSize: '25px', fontWeight: 500 }}>Honors </div>
+
+						<Grid container justifyContent={'flex-end'} sx={{ display: { lg: 'flex' } }}>
+							<MuiOutlineButton
+								variant="outlined"
+								color="inherit"
+								size="small"
+								sx={{ px: 3, py: 1, fontSize: '15px' }}
+								startIcon={<AddIcon sx={{ fill: '#232323' }} />}
+								onClick={() => setOpenHonorForm(true)}>
+								Add Name
+							</MuiOutlineButton>
+						</Grid>
+					</Stack>
+					{openHonorForm && (
+						<DialogModal
+							fullScreen
+							children={<FormAddHonors onSubmitForm={onSubmitHonors} />}
+							onClose={() => setOpenHonorForm(false)}
+							open={openHonorForm}
+							title="Add Name In Honors"
+						/>
+					)}
+					<Box>
+						{honors?.map((item, idx) => (
+							<div key={idx} style={{ padding: '10px 20px', fontSize: '20px' }}>
+								{item.name}
+							</div>
+						))}
 					</Box>
 				</>
 			)}

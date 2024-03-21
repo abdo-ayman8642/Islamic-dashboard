@@ -1,5 +1,6 @@
 import {
 	ADD_ADMIN,
+	ADD_NAME_HONORS,
 	CHANGE_PASSWORD,
 	DELETE_PODCAST,
 	DELETE_USER,
@@ -9,6 +10,7 @@ import {
 	GET_ALL_PODCASTS,
 	GET_CATEGORY_ALBUMS_BY_ID,
 	GET_CATEGORY_BY_ID,
+	GET_HONORS,
 	GET_STAT,
 	GET_USERS,
 	RESET_PASSWORD,
@@ -40,6 +42,12 @@ export async function getUsers({ queryKey }: any) {
 	return response.data;
 }
 
+export async function getHonors({ queryKey }: any) {
+	const { query } = queryKey[1];
+	const response = await axiosInstance.get(GET_HONORS + query);
+	return response.data;
+}
+
 export async function getStat({ queryKey }: any) {
 	const { query } = queryKey[1];
 	const response = await axiosInstance.get(GET_STAT + query);
@@ -63,6 +71,11 @@ export async function toggleUserSubscription(data: any) {
 
 export async function addAdmin(data: any) {
 	const response = await axiosInstance.post(ADD_ADMIN, data);
+	return response.data;
+}
+
+export async function addNameHonors(data: any) {
+	const response = await axiosInstance.post(ADD_NAME_HONORS, data);
 	return response.data;
 }
 

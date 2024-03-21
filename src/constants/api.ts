@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://api.rouhalkalam.com';
+export const BASE_URL = 'http://api.rouhalkalam.com' && 'http://localhost:3002';
 
 // Authentication
 export const LOGIN = '/api/user/loginAdmin';
@@ -42,7 +42,9 @@ export const EDIT_USER = '/api/user/edit';
 export const DELETE_USER = '/api/user/delete';
 export const TOGGLE_USER_SUBSCRIPTION = '/api/user/toggle-subscription';
 export const ADD_ADMIN = '/api/user/add';
+export const ADD_NAME_HONORS = '/api/user/add-to-honors';
 export const GET_USERS = '/api/user/users';
+export const GET_HONORS = '/api/user/honors';
 export const GET_STAT = '/api/user/analytics';
 export const CHANGE_PASSWORD = '/api/user/change-password';
 export const RESET_PASSWORD = '/api/user/reset-password';
