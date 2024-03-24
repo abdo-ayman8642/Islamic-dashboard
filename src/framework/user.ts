@@ -13,6 +13,7 @@ import {
 	GET_HONORS,
 	GET_STAT,
 	GET_USERS,
+	REMOVE_HONORS,
 	RESET_PASSWORD,
 	TOGGLE_USER_SUBSCRIPTION
 } from '../constants/api';
@@ -61,6 +62,11 @@ export async function editUser(data: any) {
 
 export async function deleteUser(data: any) {
 	const response = await axiosInstance.post(DELETE_USER, data);
+	return response.data;
+}
+
+export async function removeUser(data: any) {
+	const response = await axiosInstance.post(REMOVE_HONORS, data);
 	return response.data;
 }
 

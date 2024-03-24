@@ -21,7 +21,15 @@ import {
 import Paper from '@mui/material/Paper';
 import useAuthStore from 'store/auth';
 
-import { addAdmin, addNameHonors, deleteUser, getHonors, getUsers, toggleUserSubscription } from 'framework/user';
+import {
+	addAdmin,
+	addNameHonors,
+	deleteUser,
+	getHonors,
+	getUsers,
+	removeUser,
+	toggleUserSubscription
+} from 'framework/user';
 import { formatDate, getErrorTranslation } from 'helpers/utils';
 import { Delete } from '@mui/icons-material';
 import DialogModal from 'components/UI/DialogModal';
@@ -33,6 +41,7 @@ import FormAdd from './partials/FormAdd';
 import CheckIcon from '@mui/icons-material/Check';
 import FormToggleSubscribe from './partials/FormToggleSubscripe';
 import FormAddHonors from './partials/FormAddHonors';
+import FormRemove from './partials/FormRemove';
 
 export enum ToggleSubscribtion {
 	ACCESS = 'access',
@@ -52,6 +61,7 @@ const UsersSection = () => {
 
 	const [error, setError] = useState<boolean>(false);
 	const [openDelete, setOpenDelete] = useState<string | null>(null);
+	const [openRemove, setOpenRemove] = useState<string | null>(null);
 	const [toggleSubscripe, setToggleSubscripe] = useState<SubscribtionProp | null>(null);
 	const [openForm, setOpenForm] = useState<boolean>(false);
 	const [openHonorForm, setOpenHonorForm] = useState<boolean>(false);
@@ -64,6 +74,15 @@ const UsersSection = () => {
 		},
 		onSuccess: () => {
 			fetchUsers();
+		}
+	});
+
+	const mutationRemoveUser = useMutation({
+		mutationFn: (data: any) => {
+			return removeUser(data);
+		},
+		onSuccess: () => {
+			fetchHonors();
 		}
 	});
 
@@ -153,6 +172,7 @@ const UsersSection = () => {
 			toast.error(getErrorTranslation(code));
 		}
 	};
+
 	const addNameHonorsHandler = async (data: any) => {
 		setLoading(true);
 
@@ -190,6 +210,24 @@ const UsersSection = () => {
 			setLoading(false);
 
 			toast.success('Successfully Deleted User');
+			if (res?.Error) throw new Error(res?.Message || 'Something went wrong');
+		} catch (error: any) {
+			setLoading(false);
+			const code: string = error.response.data.data;
+			toast.error(getErrorTranslation(code));
+		}
+	};
+
+	const removeUserhandler = async (data: any) => {
+		const id = openRemove;
+		setOpenRemove(null);
+
+		setLoading(true);
+		try {
+			const res = await mutationRemoveUser.mutateAsync({ id });
+			setLoading(false);
+
+			toast.success('Successfully Removed User From List');
 			if (res?.Error) throw new Error(res?.Message || 'Something went wrong');
 		} catch (error: any) {
 			setLoading(false);
@@ -417,10 +455,23 @@ const UsersSection = () => {
 					)}
 					<Box>
 						{honors?.map((item, idx) => (
-							<div key={idx} style={{ padding: '10px 20px', fontSize: '20px' }}>
-								{item.name}
+							<div key={idx} style={{ padding: '10px 20px', fontSize: '20px', display: 'flex', gap: '10px' }}>
+								<div>{item.name}</div>
+								<Tooltip title="Remove Name From List">
+									<IconButton color="error" onClick={() => setOpenRemove(item?._id)}>
+										<Delete />
+									</IconButton>
+								</Tooltip>
 							</div>
 						))}
+						{!!openRemove && (
+							<DialogModal
+								children={<FormRemove onSubmitForm={removeUserhandler} id={openRemove} />}
+								onClose={() => setOpenRemove(null)}
+								open={!!openRemove}
+								title="Remove Name"
+							/>
+						)}
 					</Box>
 				</>
 			)}
