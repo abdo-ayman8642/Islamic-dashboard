@@ -382,20 +382,25 @@ const PodcastSection = () => {
 					style={{
 						position: 'absolute',
 						bottom: 0,
-						width: '95%',
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'end'
+						width: '100%'
 					}}>
-					<Close
-						style={{ margin: 10, cursor: 'pointer' }}
-						onClick={() => {
-							setOpenAudio(false);
-							setPlayAudio('');
-						}}
-					/>
+					<div
+						style={{
+							display: 'flex',
+							flexDirection: 'column',
+							alignItems: 'end',
+							width: '80%'
+						}}>
+						<Close
+							style={{ margin: 10, cursor: 'pointer' }}
+							onClick={() => {
+								setOpenAudio(false);
+								setPlayAudio('');
+							}}
+						/>
 
-					<AudioPlayer src={playAudio} onPlay={(e) => console.log('onPlay')} />
+						<AudioPlayer src={playAudio} onPlay={(e) => console.log('onPlay')} style={{ margin: '0 auto' }} />
+					</div>
 				</div>
 			)}
 		</section>
