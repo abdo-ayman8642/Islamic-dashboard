@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://api.rouhalkalam.com';
+export const BASE_URL = 'https://api.rouhalkalam.com';
 
 // Authentication
 export const LOGIN = '/api/user/loginAdmin';
