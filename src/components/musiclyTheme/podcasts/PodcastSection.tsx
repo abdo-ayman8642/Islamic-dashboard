@@ -23,6 +23,7 @@ import { Close } from '@mui/icons-material';
 const PodcastSection = () => {
 	const queryClient = useQueryClient();
 	const [loading, setLoading] = useState(false);
+	const [loadingUpload, setLoadingUpload] = useState(false);
 	const [audios, setAudios] = useState<Audio[]>([]);
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [playAudio, setPlayAudio] = useState<string>('');
@@ -99,7 +100,7 @@ const PodcastSection = () => {
 	const addAudioHandler = async (data: any) => {
 		const formData = new FormData();
 		setOpenForm(false);
-		setLoading(true);
+		setLoadingUpload(true);
 
 		formData.append(
 			'data',
@@ -134,11 +135,11 @@ const PodcastSection = () => {
 		data.audio.length > 0 && formData.append('audio', data.audio[0]);
 		try {
 			const res = await mutationAddAudio.mutateAsync(formData);
-			setLoading(false);
+			setLoadingUpload(false);
 			toast.success('Successfully Added Audio');
 			if (res.Error) throw new Error(res.Message || 'Something went wrong');
 		} catch (error: any) {
-			setLoading(false);
+			setLoadingUpload(false);
 			const code: string = error.response.data.data;
 			toast.error(getErrorTranslation(code));
 		}
@@ -301,15 +302,22 @@ const PodcastSection = () => {
 					<SearchField onChange={handleSearch} value={searchTerm} />
 				</Stack>
 				<Grid container justifyContent={'flex-end'} sx={{ display: { lg: 'flex' } }}>
-					<MuiOutlineButton
-						variant="outlined"
-						color="inherit"
-						size="small"
-						sx={{ px: 3, py: 1, fontSize: '15px' }}
-						startIcon={<AddIcon sx={{ fill: '#232323' }} />}
-						onClick={() => setOpenForm(true)}>
-						Add New
-					</MuiOutlineButton>
+					{loadingUpload ? (
+						<div style={{ display: 'flex', gap: 10 }}>
+							<span>Uploading...</span>
+							<CircularProgress size={20} />
+						</div>
+					) : (
+						<MuiOutlineButton
+							variant="outlined"
+							color="inherit"
+							size="small"
+							sx={{ px: 3, py: 1, fontSize: '15px' }}
+							startIcon={<AddIcon sx={{ fill: '#232323' }} />}
+							onClick={() => setOpenForm(true)}>
+							Add New
+						</MuiOutlineButton>
+					)}
 				</Grid>
 			</Stack>
 			{openForm && (
