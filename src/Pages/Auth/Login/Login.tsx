@@ -47,7 +47,10 @@ const Login: React.FC = () => {
 		onSubmit: async (values, helpers) => {
 			setLoading(true);
 			try {
-				const response: ILoginResponse = await mutationLogin.mutateAsync(values);
+				const response: ILoginResponse = await mutationLogin.mutateAsync({
+					email: values.email.toLocaleLowerCase(),
+					password: values.password
+				});
 				// setAlert({ open: true, message: `Welcome ${res.user.name}`, type: "success" });
 				// localStorage.setItem('token', response.data.token);
 				// localStorage.setItem('user', JSON.stringify(res.user));

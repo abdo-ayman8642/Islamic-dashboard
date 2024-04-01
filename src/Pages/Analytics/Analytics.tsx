@@ -78,7 +78,7 @@ const Analytics: React.FC = () => {
 						</Box>
 						<Stack direction={'column'}>
 							<Box color="#8a8a8a">Total Money</Box>
-							<Box>{totalDonations + totalSubscription}</Box>
+							<Box>{(totalDonations + totalSubscription) / 100}</Box>
 						</Stack>
 					</Stack>
 					<PieChart
@@ -86,8 +86,8 @@ const Analytics: React.FC = () => {
 						series={[
 							{
 								data: [
-									{ id: 0, value: totalSubscription, label: 'Subscription $' },
-									{ id: 1, value: totalDonations, label: 'Donations $' }
+									{ id: 0, value: totalSubscription / 100, label: 'Subscription $' },
+									{ id: 1, value: totalDonations / 100, label: 'Donations $' }
 								]
 							}
 						]}
